@@ -1,18 +1,85 @@
 <template>
     <base-page>
-        <doctor-searcher></doctor-searcher>
-        <doctors-list></doctors-list>
+        <doctor-search @search="searchDoctors"></doctor-search>
+        <section>
+            <base-spinner v-if="isLoading"></base-spinner>
+            <base-dialog :show="!!error" title="Błąd :(" @close="confirmError">
+                <p> {{ error }} </p>
+            </base-dialog>
+            <doctors-list></doctors-list>
+        </section>
+        <base-pagination v-if="showPagination"
+            :currentPage="paginationParams.CurrentPage"
+            :totalPages="paginationParams.TotalPages"
+            :pageSize="paginationParams.PageSize"
+            :totalCount="paginationParams.TotalCount"
+            @page-changed="changePage"
+        >
+        </base-pagination>
     </base-page>
 </template>
 
 <script>
+import { ERROR_DEFAULT_MSG } from '../consts';
+
 import DoctorsList from '../components/doctors/DoctorsList.vue';
-import DoctorSearcher from '../components/doctors/DoctorSearcher.vue';
+import DoctorSearch from '../components/doctors/DoctorSearch.vue';
 
 export default {
     components: {
         DoctorsList,
-        DoctorSearcher
+        DoctorSearch
+    },
+    data() {
+        return {
+            searchProps: null,
+
+            isLoading: false,
+            error: null,
+            showPagination: false
+        }
+    },
+    computed: {
+        paginationParams() {
+            return this.$store.getters['doctors/paginationParams'];
+        },
+        doctorsExists() {
+            return this.$store.getters['doctors/doctorsExists'];  
+        }
+    },
+    methods: {
+        async search(pageNumber = 1, pageSize = 10) {
+            this.isLoading = true;
+            this.showPagination = false;
+
+            try {
+                await this.$store.dispatch('doctors/searchDoctors', {
+                    text: this.searchProps.text,
+                    specialty: this.searchProps.specialty.id,
+                    city: this.searchProps.city.id,
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+                });
+
+                this.showPagination = this.doctorsExists;
+            }
+            catch (error) {
+                this.error = ERROR_DEFAULT_MSG;
+                this.isLoading = false;
+            }
+
+            this.isLoading = false;
+        },
+        changePage(page) {
+            this.search(page, this.paginationParams.PageSize);
+        },
+        searchDoctors(searchProps) {
+            this.searchProps = searchProps;
+            this.search();
+        },
+        confirmError() {
+            this.error = null;
+        }
     }
 }
 </script>

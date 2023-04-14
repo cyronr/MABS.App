@@ -1,7 +1,7 @@
 <template>
     <header>
         <nav>
-          <h1><router-link to="/">(nie)znanylekarz.cr</router-link></h1>
+          <h1><router-link to="/" @click="reloadPage">(nie)znanylekarz.cr</router-link></h1>
           <!-- <ul>
             <li>
               <router-link to="/coaches">Coaches</router-link>
@@ -22,6 +22,11 @@
 
 <script>
 export default {
+  methods: {
+    reloadPage() {
+      location.reload();
+    }
+}
   // computed: {
   //     isLoggedIn() {
   //         return this.$store.getters.isAuth;

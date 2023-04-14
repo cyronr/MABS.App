@@ -13,7 +13,7 @@
         </section>
         <menu v-if="!fixed">
           <slot name="actions">
-            <base-button @click="tryClose">Close</base-button>
+            <base-button @click="tryClose">Zamknij</base-button>
           </slot>
         </menu>
       </dialog>
@@ -36,7 +36,7 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
+    }
   },
   emits: ['close'],
   methods: {
@@ -77,7 +77,7 @@ dialog {
 }
 
 header {
-  background-color: #3a0061;
+  background-color: #5c6bc0;
   color: white;
   width: 100%;
   padding: 1rem;

@@ -6,7 +6,9 @@ export default {
     namespaced: true,
     state() {
         return {
-            doctors: []
+            doctors: [],
+            specialties: [],
+            paginationParams: []
         }
     },
     mutations,
