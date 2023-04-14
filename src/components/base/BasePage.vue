@@ -1,9 +1,11 @@
 <template>
-    <the-header></the-header>
-    <main>
-        <slot></slot>
-    </main>
-    <the-footer></the-footer>
+    <div class="page-container">
+        <the-header></the-header>
+        <main>
+            <slot></slot>
+        </main>
+        <the-footer></the-footer>
+    </div> 
 </template>
 
 <script>
@@ -19,11 +21,24 @@ export default {
 </script>
 
 <style scoped>
-    main {
-        /* border-radius: 12px; */
-        /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26); */
-        padding: 1rem;
-        margin: 0.5rem auto;
-        max-width: 80%;
-    }
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+    position: relative; 
+}
+
+main {
+    flex-grow: 1; 
+    padding: 1rem;
+    margin: 0.5rem auto;
+    width: 80%;
+}
+
+.the-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
 </style>

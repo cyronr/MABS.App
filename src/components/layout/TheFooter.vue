@@ -1,17 +1,22 @@
 <template>
-    <div></div>
-    <!-- <footer>
-        <h3>Footer text</h3>
-    </footer> -->
+    <footer>
+        <p>© Cyron Remigiusz, 2023</p>
+    </footer> 
 </template>
 
 <style scoped>
-/* footer {
-  position: absolute;
-  bottom: 0;
+ footer {
+  height: 5vh;
   width: 100%;
-  height: 3rem; 
+  background-color: #7083ec;
+  color: white;
   display: flex;
-  background-color: aquamarine;
-} */
+  justify-content: center;
+  padding: 1rem auto;
+  margin-top: 1rem;
+} 
+
+footer p {
+  font-size: 12px;
+}
 </style>
