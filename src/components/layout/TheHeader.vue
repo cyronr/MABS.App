@@ -1,21 +1,19 @@
 <template>
     <header>
         <nav>
-          <h1><router-link to="/" @click="reloadPage">(nie)znanylekarz.cr</router-link></h1>
-          <!-- <ul>
-            <li>
-              <router-link to="/coaches">Coaches</router-link>
+          <h1><router-link to="/" @click="goToHomePage">(nie)znanylekarz.cr</router-link></h1>
+          <h3 v-if="isLogged"> {{ currentLoggedProfile.email }} </h3>
+          <ul>
+            <li v-if="!isLogged">
+              <router-link to="/login">Zaloguj się</router-link>
             </li>
-            <li v-if="isLoggedIn">
-              <router-link to="/requests">Requests</router-link>
+            <li v-if="!isLogged">
+              <router-link to="/register">Zarejestruj się</router-link>
             </li>
-            <li v-else>
-              <router-link to="/auth">Login</router-link>
+            <li v-if="isLogged">
+              <base-button mode="flat" @click="logout" class="dupa">Wyloguj się</base-button>
             </li>
-            <li v-if="isLoggedIn">
-              <base-button @click="logout">Logout</base-button>
-            </li>
-          </ul> -->
+          </ul>
         </nav>
     </header>
 </template>
@@ -23,21 +21,23 @@
 <script>
 export default {
   methods: {
-    reloadPage() {
-      location.reload();
+    goToHomePage() {
+      this.$router.push('/');
+      window.location.href = '/';
+    },
+    logout() {
+      this.$store.dispatch('auth/logout');
+      this.$router.replace('/');
     }
-}
-  // computed: {
-  //     isLoggedIn() {
-  //         return this.$store.getters.isAuth;
-  //     }
-  // },
-  // methods: {
-  //   logout() {
-  //     this.$store.dispatch('logout');
-  //     this.$router.replace('/coaches');
-  //   }
-  // }
+  },
+  computed: {
+    isLogged() {
+      return this.$store.getters['auth/isLogged'];
+    },
+    currentLoggedProfile() {
+      return this.$store.getters['auth/loggedProfile'];
+    }
+  },
 }
 </script>
 
@@ -53,16 +53,15 @@ header {
 
 header a {
   text-decoration: none;
-  color: #f391e3;
+  color: #eee;
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  border: 1px solid transparent;
 }
 
 a:active,
 a:hover,
 a.router-link-active {
-  border: 1px solid #f391e3;
+  color: white;
 }
 
 h1 {
@@ -99,5 +98,12 @@ header ul {
 
 li {
   margin: 0 0.5rem;
+}
+
+.dupa {
+  text-decoration: none;
+  color: #eee;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
 }
 </style>

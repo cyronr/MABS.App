@@ -3,17 +3,16 @@ import { createRouter, createWebHistory } from "vue-router";
 // import store from './store/index.js';
 
 import MainPage from './pages/MainPage.vue';
-// import CoachesList from './pages/coaches/CoachesList.vue';
-// import CoachRegister from './pages/coaches/CoachRegister.vue';
-// import ContactCoach from './pages/requests/ContactCoach.vue';
-// import RequestsReceived from './pages/requests/RequestsReceived.vue';
-// import UserAuth from './pages/auth/UserAuth.vue';
+import LoginPage from './pages/LoginPage.vue';
+import RegisterPage from './pages/RegisterPage.vue';
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', component: MainPage },
+        { path: '/login', component: LoginPage },
+        { path: '/register', component: RegisterPage },
         // { path: '/coaches', component: CoachesList },
         // { 
         //     path: '/coaches/:id', 

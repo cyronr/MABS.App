@@ -6,7 +6,8 @@ export default {
     namespaced: true,
     state() {
         return {
-            facilities: []
+            token: null,
+            loggedProfile: {}
         }
     },
     mutations,

@@ -5,6 +5,9 @@ export default {
     setSpecialties(state, payload) {
         state.specialties = payload;
     },
+    setCities(state, payload) {
+        state.cities = payload;
+    },
     setPaginationParams(state, payload) {
         state.paginationParams = payload;
     },

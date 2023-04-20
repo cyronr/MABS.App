@@ -49,7 +49,7 @@ export default {
             return this.$store.getters['doctors/specialties']; 
         },
         cities() {
-            return this.$store.getters['facilities/cities']; 
+            return this.$store.getters['doctors/cities']; 
         },
         doctorsExists() {
             return this.$store.getters['doctors/doctorsExists'];  
@@ -73,8 +73,6 @@ export default {
 
             this.$emit('search', this.searchProps);
 
-            console.log(this.doctorsExists);
-
             this.inputedText = '';
             this.selectedSpecialty = null;
             this.selectedCity = null;
@@ -87,8 +85,13 @@ export default {
                 this.error = ERROR_DEFAULT_MSG;
             }
         },
-        loadCities() {
-            
+        async loadCities() {
+            try {
+                await this.$store.dispatch('doctors/getCities');
+            }
+            catch (error) {
+                this.error = ERROR_DEFAULT_MSG;
+            }
         }
     },
     created() {

@@ -8,7 +8,8 @@ export default {
         return {
             doctors: [],
             specialties: [],
-            paginationParams: []
+            paginationParams: [],
+            cities: []
         }
     },
     mutations,

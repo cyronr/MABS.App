@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 
  import doctorsModule from "./doctors";
  import facilitiesModule from "./facilities";
+ import authModule from "./auth";
 
 // import requestsModule from "./modules/requests";
 // import authModule from "./modules/auth";
@@ -9,7 +10,8 @@ import { createStore } from "vuex";
 const store = createStore({
     modules: {
         doctors: doctorsModule,
-        facilities: facilitiesModule
+        facilities: facilitiesModule,
+        auth: authModule
         // requests: requestsModule,
         // auth: authModule
     }

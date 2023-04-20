@@ -1,15 +1,17 @@
 import axios from 'axios';
-import { API_URL, API_SUCCESS_RESPONSE_CODES } from '../../consts';
+import { API_URL, API_SUCCESS_RESPONSE_CODES } from '../../api';
 
 export default {
     async searchDoctors(context, payload) {
         context.commit('setDoctors', []);
 
-        const response = await axios.get(`${API_URL}/doctors`, {
+        const response = await axios.get(`${API_URL}/doctors/search`, {
             params: {
                 PageNumber: payload.pageNumber,
                 PageSize: payload.pageSize,
-                searchText: payload.text
+                searchText: payload.text,
+                specialtyId: payload.specialty,
+                cityId: payload.city
             }
         });
 
@@ -28,5 +30,14 @@ export default {
         }
 
         context.commit('setSpecialties', response.data)
+    },
+    async getCities(context) {
+        const response = await axios.get(`${API_URL}/dict/cities`);
+
+        if (!API_SUCCESS_RESPONSE_CODES.includes(response.status)) {
+            throw new Error(response.statusText || 'Failed to fetch!');
+        }
+
+        context.commit('setCities', response.data)
     }
 };

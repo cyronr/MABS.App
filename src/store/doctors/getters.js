@@ -8,6 +8,9 @@ export default {
     specialties(state) {
         return state.specialties;
     },
+    cities(state) {
+        return state.cities;
+    },
     paginationParams(state) {
         return state.paginationParams;
     }
