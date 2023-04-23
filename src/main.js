@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import VueMask from 'vue-the-mask';
 
 import router from './router';
 import store from './store/index.js'
@@ -16,6 +17,7 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
+app.use(VueMask);
 
 app.component('base-page', BasePage);
 app.component('base-card', BaseCard);

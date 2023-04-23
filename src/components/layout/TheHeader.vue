@@ -2,7 +2,6 @@
     <header>
         <nav>
           <h1><router-link to="/" @click="goToHomePage">(nie)znanylekarz.cr</router-link></h1>
-          <h3 v-if="isLogged"> {{ currentLoggedProfile.email }} </h3>
           <ul>
             <li v-if="!isLogged">
               <router-link to="/login">Zaloguj się</router-link>
@@ -11,7 +10,7 @@
               <router-link to="/register">Zarejestruj się</router-link>
             </li>
             <li v-if="isLogged">
-              <base-button mode="flat" @click="logout" class="dupa">Wyloguj się</base-button>
+              <logged-user-menu></logged-user-menu>
             </li>
           </ul>
         </nav>
@@ -19,15 +18,15 @@
 </template>
 
 <script>
+import LoggedUserMenu from './LoggedUserMenu.vue';
+
 export default {
-  methods: {
-    goToHomePage() {
-      this.$router.push('/');
-      window.location.href = '/';
-    },
-    logout() {
-      this.$store.dispatch('auth/logout');
-      this.$router.replace('/');
+  components: {
+    LoggedUserMenu
+  },
+  data() {
+    return {
+      isDropdownOpen: false
     }
   },
   computed: {
@@ -38,6 +37,15 @@ export default {
       return this.$store.getters['auth/loggedProfile'];
     }
   },
+  methods: {
+    goToHomePage() {
+      this.$router.push('/');
+      window.location.href = '/';
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    }
+  }
 }
 </script>
 
@@ -100,10 +108,57 @@ li {
   margin: 0 0.5rem;
 }
 
-.dupa {
-  text-decoration: none;
-  color: #eee;
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
+
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-button {
+  display: flex;
+  align-items: center;
+  background-color: #eee;
+  padding: 0.5rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  width: 200px;
+  justify-content: space-between;
+}
+
+.dropdown-icon {
+  margin-left: 0.5rem;
+  transform-origin: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  padding: 0.5rem;
+  list-style-type: none;
+  margin-top: 0.5rem;
+  max-height: 0;
+  overflow-y: auto;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.dropdown-item {
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.dropdown-menu:empty {
+  display: none;
+}
+
+.dropdown-menu:not(:empty) {
+  max-height: 300px;
 }
 </style>

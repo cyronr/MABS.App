@@ -3,41 +3,47 @@
         <h3>Zarejestruj się jako placówka medyczna</h3>
         <section>
             <div class="form-control">
-                <input type="email" id="email" placeholder="Adres e-mail" />               
+                <input type="email" id="email" placeholder="Adres e-mail" v-model="email.value" :class="{error: !email.valid}" />               
             </div>
         </section>
         <section>
             <div class="form-control">
-                <input type="password" id="password" placeholder="Hasło" />               
+                <input type="password" id="password" placeholder="Hasło" v-model="password.value" :class="{error: !password.valid}" />               
             </div>
             <div class="form-control">
-                <input type="password" id="repeteadPassword" placeholder="Powtórz hasło" />               
+                <input type="password" id="repeteadPassword" placeholder="Powtórz hasło" v-model="repeatedPassword.value" :class="{error: !repeatedPassword.valid}" />               
+            </div>
+        </section>
+        <section>
+            <div class="form-control">
+                <input type="phone" id="phone" placeholder="Numer telefonu" v-mask="'### ### ###'" v-model="phone.value" :class="{error: !phone.valid}" />       
             </div>
         </section>
         <div class="separator"></div>
         <section>
             <div class="form-control">
-                <input type="text" id="shortName" placeholder="Skrócona nazwa placówki" />       
+                <input type="text" id="shortName" placeholder="Skrócona nazwa placówki" v-model="shortName.value" :class="{error: !shortName.valid}" />       
             </div>
             <div class="form-control">
-                <input type="text" id="fullName" placeholder="Pełna nazwa placówki" />       
+                <input type="text" id="fullName" placeholder="Pełna nazwa placówki" v-model="fullName.value" :class="{error: !fullName.valid}" />       
             </div>
             <div class="form-control">
-                <input type="text" id="taxIdentificationNumber" placeholder="Numer NIP" />       
+                <input type="text" id="taxIdentificationNumber" placeholder="Numer NIP" v-mask="'###-###-##-##'" v-model="taxIdentificationNumber.value" :class="{error: !taxIdentificationNumber.valid}" />       
             </div>
         </section>
         <div class="separator"></div>
         <section>
             <div class="form-control-address">
-                <input type="text" id="zipCode" placeholder="Kod pocztowy" :class="{ 'address-zipCode': true }"/>     
-                <input type="text" id="city" placeholder="Miejscowość" :class="{ 'address-city': true }"/>     
+                <input type="text" id="zipCode" placeholder="Kod pocztowy" v-mask="'##-###'" v-model="zipCode.value" :class="{ 'address-zipCode': true, error: !zipCode.valid }"/>     
+                <input type="text" id="city" placeholder="Miejscowość" v-model="city.value" :class="{ 'address-city': true, error: !city.valid }"/>     
             </div>
             <div class="form-control-address">
-                <input type="text" id="street" placeholder="Ulica" :class="{ 'address-street': true }" />     
-                <input type="text" id="houseNumber" placeholder="Nr domu" :class="{ 'address-street-no': true }" />  
-                <input type="text" id="flatNumber" placeholder="Nr lokalu" :class="{ 'address-street-no': true }" />       
+                <input type="text" id="street" placeholder="Ulica" v-model="street.value" :class="{ 'address-street': true, error: !street.valid }" />     
+                <input type="number" id="houseNumber" placeholder="Nr domu" v-model="houseNumber.value" :class="{ 'address-street-no': true, error: !houseNumber.valid }" />  
+                <input type="number" id="flatNumber" placeholder="Nr lokalu" v-model="flatNumber.value" :class="{ 'address-street-no': true, error: !flatNumber.valid }" />       
             </div>
         </section>
+        <p v-if="formInvalid" class="error" v-html="error.replace('\n', '<br/>')"></p>
         <section>
             <base-button class="register-button">Zarejestruj</base-button>
         </section>
@@ -45,15 +51,215 @@
 </template>
 
 <script>
+
 export default {
     data() {
         return {
+            email: {
+                value: '',
+                valid: true
+            },
+            password: {
+                value: '',
+                valid: true
+            },
+            repeatedPassword: {
+                value: '',
+                valid: true
+            },
+            phone: {
+                value: null,
+                valid: true
+            },
+            shortName: {
+                value: '',
+                valid: true
+            },
+            fullName: {
+                value: '',
+                valid: true
+            },
+            taxIdentificationNumber: {
+                value: null,
+                valid: true
+            },
+            zipCode: {
+                value: null,
+                valid: true
+            },
+            city: {
+                value: '',
+                valid: true
+            },
+            street: {
+                value: '',
+                valid: true
+            },
+            houseNumber: {
+                value: null,
+                valid: true
+            },
+            flatNumber: {
+                value: null,
+                valid: true
+            },
 
+            formInvalid: false,
+            error: null
         }
     },
     methods: {
-        register() {
-            
+        async register() {
+            this.validateForm();
+            if (this.formInvalid) {
+                return;
+            }
+
+            try {
+                await this.$store.dispatch('auth/registerFacility', {
+                    email: this.email.value,
+                    password: this.password.value,
+                    firstName: this.firstName.value,
+                    lastName: this.lastName.value,
+                    phone: this.phone.value
+                });
+            } 
+            catch (error) {
+                this.error = error.message || 'Niepoprawne dane.';
+            }
+
+            this.resetFormValues();
+        },
+        validateForm() {
+            this.resetFormValidation();
+
+            let missingValue = false;
+            let differentPasswords = false;
+
+            if (this.email.value === '') {
+                this.email.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.password.value === '') {
+                this.password.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.repeatedPassword.value === '') {
+                this.repeatedPassword.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.shortName.value === '') {
+                this.shortName.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.fullName.value === '') {
+                this.fullName.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.phone.value === null) {
+                this.phone.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.taxIdentificationNumber.value === null) {
+                this.taxIdentificationNumber.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.zipCode.value === null) {
+                this.zipCode.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.city.value === '') {
+                this.city.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.street.value === '') {
+                this.street.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+
+            if (this.houseNumber.value === null) {
+                this.houseNumber.valid = false;
+                this.formInvalid = true;
+
+                missingValue = true;
+            }
+          
+            if (this.repeatedPassword.value !== '' && this.password.value !== '' && this.password.value !== this.repeatedPassword.value) {
+                this.password.valid = false;
+                this.repeatedPassword.valid = false;
+                this.formInvalid = true;
+
+                differentPasswords = true;
+            }
+
+            if (this.formInvalid) {
+                if (missingValue) {
+                    this.error = 'Uzupełnij wszystkie wymagane pola';
+                }
+                if (differentPasswords) {
+                    this.error = (this.error !== null ? this.error + '\n' : '') + 'Podane hasła się nie zgadzają';
+                }
+            }
+        },
+        resetFormValues() {
+            this.email.value = '';
+            this.password.value = '';
+            this.repeatedPassword.value = '';
+            this.phone.value = null;
+            this.shortName.value = '';
+            this.fullName.value = '';
+            this.taxIdentificationNumber.value = null;
+            this.zipCode.value = null;
+            this.city.value = '';
+            this.street.value = '';
+            this.houseNumber.value = null;
+            this.flatNumber.value = null;
+        },
+        resetFormValidation() {
+            this.email.valid = true;
+            this.password.valid = true;
+            this.repeatedPassword.valid = true;
+            this.phone.valid = true;
+            this.shortName.valid = true;
+            this.fullName.valid = true;
+            this.taxIdentificationNumber.valid = true;
+            this.zipCode.valid = true;
+            this.city.valid = true;
+            this.street.valid = true;
+            this.houseNumber.valid = true;
+            this.flatNumber.valid = true;
+
+            this.formInvalid = false;
+            this.error = null;
         }
     }
 }
