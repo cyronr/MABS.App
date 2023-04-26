@@ -5,6 +5,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainPage from './pages/MainPage.vue';
 import LoginPage from './pages/LoginPage.vue';
 import RegisterPage from './pages/RegisterPage.vue';
+import MyDataPage from './pages/MyDataPage.vue';
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({
@@ -13,6 +14,7 @@ const router = createRouter({
         { path: '/', component: MainPage },
         { path: '/login', component: LoginPage },
         { path: '/register', component: RegisterPage },
+        { path: '/profile', component: MyDataPage },
         // { path: '/coaches', component: CoachesList },
         // { 
         //     path: '/coaches/:id', 

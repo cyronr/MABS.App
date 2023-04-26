@@ -12,8 +12,21 @@ const store = createStore({
         doctors: doctorsModule,
         facilities: facilitiesModule,
         auth: authModule
-        // requests: requestsModule,
-        // auth: authModule
+    },
+    state() {
+        return {
+            isPageLoading: false
+        }
+    },
+    getters: {
+        isPageLoading(state) {
+            return state.isPageLoading;
+        }
+    },
+    mutations: {
+        setIsPageLoading(state, payload) {
+            state.isPageLoading = payload;
+        }
     }
 });
 

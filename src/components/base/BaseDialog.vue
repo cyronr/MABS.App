@@ -2,8 +2,8 @@
   <teleport to="body">
     <div v-if="show" @click="tryClose" class="backdrop"></div>
     <transition name="dialog">
-      <dialog open v-if="show">
-        <header>
+      <dialog open v-if="show" :class="{transparent: transparent}">
+        <header v-if="!transparent">
           <slot name="header">
             <h2>{{ title }}</h2>
           </slot>
@@ -36,6 +36,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    transparent: {
+      type: Boolean,
+      required: false,
+      default: false, 
     }
   },
   emits: ['close'],
@@ -116,6 +121,11 @@ menu {
 .dialog-leave-from {
   opacity: 1;
   transform: scale(1);
+}
+
+.transparent {
+  background-color: rgba(0, 0, 0, 0); 
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
 @media (min-width: 768px) {

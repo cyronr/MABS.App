@@ -1,4 +1,7 @@
 <template>
+    <base-dialog :show="isPageLoading" title="Authenticating..." fixed transparent>
+        <base-spinner></base-spinner>
+    </base-dialog>
     <div class="page-container">
         <the-header></the-header>
         <main>
@@ -16,6 +19,11 @@ export default {
     components: {
         TheHeader,
         TheFooter
+    },
+    computed: {
+        isPageLoading() {
+            return this.$store.getters['isPageLoading'];  
+        }
     }
 };
 </script>

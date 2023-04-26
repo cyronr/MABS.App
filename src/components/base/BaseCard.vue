@@ -1,8 +1,20 @@
 <template>
-    <div class="card">
+    <div class="card" :class="{vertical: vertical}">
         <slot></slot>
     </div>
 </template>
+
+<script>
+export default {
+  props: {
+    vertical: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  }
+}
+</script>
 
 <style scoped>
 .card {
@@ -12,5 +24,10 @@
   margin: 2rem auto;
   max-width: 50rem;
   background-color: #F5F5F5;
+}
+
+.vertical {
+  max-width: 20rem;
+  min-height: 30rem;
 }
 </style>

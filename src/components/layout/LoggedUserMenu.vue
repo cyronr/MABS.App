@@ -8,7 +8,7 @@
             <li class="dropdown-item"> <hr /> </li>
             <li class="dropdown-item">Moje wizyty</li>
             <li class="dropdown-item"> <hr /> </li>
-            <li class="dropdown-item">Moje konto</li>
+            <li class="dropdown-item"  @click="chooseMenuOption('profile')">Moje konto</li>
             <li class="dropdown-item"> <hr /> </li>
             <li class="dropdown-item logout" @click="logout">Wyloguj się</li>
         </ul>
@@ -40,6 +40,9 @@ export default {
             this.$store.dispatch('auth/logout');
             this.$router.replace('/');
         },
+        chooseMenuOption(page) {
+            this.$router.replace('/' + page);
+        }
     },
     mounted() {
         document.addEventListener("click", this.handleOutsideClick);

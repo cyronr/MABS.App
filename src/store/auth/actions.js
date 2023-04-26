@@ -4,6 +4,8 @@ import { API_URL, handleAPIError } from '../../api';
 export default {
     async login(context, payload) {
         try {
+            context.commit('setIsPageLoading', true, { root: true })
+
             const response = await axios.post(`${API_URL}/auth/login`, {
                 email: payload.email,
                 password: payload.password
@@ -18,8 +20,10 @@ export default {
             context.commit('setloggedProfile', profile);
 
             console.log(profile);
+            context.commit('setIsPageLoading', false, { root: true })
         }
         catch (error) {
+            context.commit('setIsPageLoading', false, { root: true })
             handleAPIError(error);
         }
     },

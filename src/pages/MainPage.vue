@@ -2,7 +2,6 @@
     <base-page>
         <doctor-search @search="searchDoctors"></doctor-search>
         <section>
-            <base-spinner v-if="isLoading"></base-spinner>
             <base-dialog :show="!!error" title="Błąd :(" @close="confirmError">
                 <p> {{ error }} </p>
             </base-dialog>
@@ -34,7 +33,6 @@ export default {
         return {
             searchProps: null,
 
-            isLoading: false,
             error: null,
             showPagination: false
         }
@@ -49,7 +47,6 @@ export default {
     },
     methods: {
         async search(pageNumber = 1, pageSize = 10) {
-            this.isLoading = true;
             this.showPagination = false;
 
             try {
@@ -65,10 +62,7 @@ export default {
             }
             catch (error) {
                 this.error = ERROR_DEFAULT_MSG;
-                this.isLoading = false;
             }
-
-            this.isLoading = false;
         },
         changePage(page) {
             this.search(page, this.paginationParams.PageSize);
