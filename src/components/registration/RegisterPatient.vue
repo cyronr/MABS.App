@@ -23,7 +23,7 @@
                 <input type="text" id="lastname" placeholder="Nazwisko" v-model.trim="lastName.value" :class="{error: !lastName.valid}" />       
             </div>
             <div class="form-control">
-                <input type="phone" id="phone" placeholder="Numer telefonu" v-mask="'### ### ###'" v-model.number="phone.value" :class="{error: !phone.valid}" />       
+                <input type="phone" id="phone" placeholder="Numer telefonu" v-mask="'#########'" v-model.number="phone.value" :class="{error: !phone.valid}" />       
             </div>
         </section>
         <p v-if="formInvalid" class="error" v-html="error.replace('\n', '<br/>')"></p>
@@ -79,11 +79,13 @@ export default {
                     password: this.password.value,
                     firstName: this.firstName.value,
                     lastName: this.lastName.value,
-                    phone: this.phone.value
+                    phone: this.phone.value.toString()
                 });
-                //this.$router.replace('/' + (this.$route.query.redirect || 'coaches'));
+                
+                this.$router.replace('/');
             } 
             catch (error) {
+                this.formInvalid = true;
                 this.error = error.message || 'Niepoprawne dane.';
             }
 

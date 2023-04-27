@@ -51,7 +51,8 @@ export default {
                     email: this.email,
                     password: this.password
                 });
-                //this.$router.replace('/' + (this.$route.query.redirect || 'coaches'));
+                
+                this.$router.replace('/');
             } 
             catch (error) {
                 this.error = error.message || 'Niepoprawne dane.';

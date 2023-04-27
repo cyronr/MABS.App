@@ -11,15 +11,7 @@ export default {
                 password: payload.password
             });
             
-            const token = response.data.token;
-            const profile = response.data.profile;
-
-            localStorage.setItem('token', token);
-            localStorage.setItem('profile', JSON.stringify(profile));
-            context.commit('setToken', { token: token });
-            context.commit('setloggedProfile', profile);
-
-            console.log(profile);
+            context.dispatch('authenticate', response);
             context.commit('setIsPageLoading', false, { root: true })
         }
         catch (error) {
@@ -27,11 +19,71 @@ export default {
             handleAPIError(error);
         }
     },
+    async registerPatient(context, payload) {
+        try {
+            context.commit('setIsPageLoading', true, { root: true })
+
+            const response = await axios.post(`${API_URL}/auth/register/patient`, {
+                email: payload.email,
+                password: payload.password,
+                phoneNumber: payload.phone,
+                firstname: payload.firstName,
+                lastname: payload.lastName
+            });
+            
+            context.dispatch('authenticate', response);
+            context.commit('setIsPageLoading', false, { root: true })
+        }
+        catch (error) {
+            context.commit('setIsPageLoading', false, { root: true })
+            handleAPIError(error);
+        }
+    },
+    async registerFacility(context, payload) {
+        try {
+            context.commit('setIsPageLoading', true, { root: true })
+
+            const response = await axios.post(`${API_URL}/auth/register/facility`, {
+                email: payload.email,
+                password: payload.password,
+                phoneNumber: payload.phone,
+                facility: {
+                    shortName: payload.shortName,
+                    name: payload.name,
+                    taxIdentificationNumber: payload.taxIdentificationNumber,
+                    address: {
+                        name: payload.addressName,
+                        streetTypeId: payload.streetType,
+                        streetName: payload.streetName,
+                        houseNumber: payload.houseNumber,
+                        flatNumber: payload.flatNumber,
+                        city: payload.city,
+                        postalCode: payload.postalCode,
+                        countryId: 'PL'
+                    }
+                }
+            });
+            
+            context.dispatch('authenticate', response);
+            context.commit('setIsPageLoading', false, { root: true })
+        }
+        catch (error) {
+            context.commit('setIsPageLoading', false, { root: true })
+            handleAPIError(error);
+        }
+    },
+    authenticate(context, payload) {
+        const token = payload.data.token;
+        const profile = payload.data.profile;
+
+        localStorage.setItem('token', token);
+        localStorage.setItem('profile', JSON.stringify(profile));
+        context.commit('setToken', { token: token });
+        context.commit('setloggedProfile', profile);
+    },
     logout(context) {
         localStorage.removeItem('token');
         localStorage.removeItem('profile');
-
-        console.log('logout');
 
         context.commit('setToken', { token: null });
         context.commit('setloggedProfile', null);
@@ -42,8 +94,5 @@ export default {
 
         context.commit('setToken', { token: token });
         context.commit('setloggedProfile', profile);
-    },
-    async registerPatient(context) {
-        console.log(context);
     }
 };

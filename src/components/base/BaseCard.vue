@@ -1,5 +1,5 @@
 <template>
-    <div class="card" :class="{vertical: vertical}">
+    <div class="card" :class="{vertical: vertical}" :style="style">
         <slot></slot>
     </div>
 </template>
@@ -11,7 +11,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    }
+    },
+    style: {
+      type: Object,
+      default: () => ({}),
+    },
   }
 }
 </script>

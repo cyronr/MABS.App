@@ -4,9 +4,8 @@
 
 <script>
 export default {
-  created() {
-    console.log(this.$store.getters['auth/token']);
-    this.$store.dispatch('auth/autoLogin');
+  async created() {
+    await this.$store.dispatch('auth/autoLogin');
   }
 }
 </script>

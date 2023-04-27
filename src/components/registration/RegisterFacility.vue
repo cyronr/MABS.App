@@ -16,7 +16,7 @@
         </section>
         <section>
             <div class="form-control">
-                <input type="phone" id="phone" placeholder="Numer telefonu" v-mask="'### ### ###'" v-model="phone.value" :class="{error: !phone.valid}" />       
+                <input type="phone" id="phone" placeholder="Numer telefonu" v-mask="'#########'" v-model.number="phone.value" :class="{error: !phone.valid}" />      
             </div>
         </section>
         <div class="separator"></div>
@@ -38,6 +38,11 @@
                 <input type="text" id="city" placeholder="Miejscowość" v-model="city.value" :class="{ 'address-city': true, error: !city.valid }"/>     
             </div>
             <div class="form-control-address">
+                <select v-model="streetType.value" id="streetType-select">
+                    <option v-for="streetType in streetTypes" :key="streetType.id" :value="streetType.id">
+                        {{ streetType.shortName }}
+                    </option>
+                </select>
                 <input type="text" id="street" placeholder="Ulica" v-model="street.value" :class="{ 'address-street': true, error: !street.valid }" />     
                 <input type="number" id="houseNumber" placeholder="Nr domu" v-model="houseNumber.value" :class="{ 'address-street-no': true, error: !houseNumber.valid }" />  
                 <input type="number" id="flatNumber" placeholder="Nr lokalu" v-model="flatNumber.value" :class="{ 'address-street-no': true, error: !flatNumber.valid }" />       
@@ -51,6 +56,7 @@
 </template>
 
 <script>
+import { ERROR_DEFAULT_MSG } from '../../consts';
 
 export default {
     data() {
@@ -91,6 +97,10 @@ export default {
                 value: '',
                 valid: true
             },
+            streetType: {
+                value: 1,
+                valid: true
+            },
             street: {
                 value: '',
                 valid: true
@@ -108,27 +118,50 @@ export default {
             error: null
         }
     },
+    computed: {
+        streetTypes() {
+            return this.$store.getters['facilities/streetTypes']; 
+        }
+    },
     methods: {
         async register() {
             this.validateForm();
             if (this.formInvalid) {
                 return;
             }
-
+            
             try {
                 await this.$store.dispatch('auth/registerFacility', {
                     email: this.email.value,
                     password: this.password.value,
-                    firstName: this.firstName.value,
-                    lastName: this.lastName.value,
-                    phone: this.phone.value
+                    phoneNumber: this.phone.value.toString(),
+                    shortName: this.shortName.value,
+                    name: this.fullName.value,
+                    taxIdentificationNumber: this.taxIdentificationNumber.value.toString().replace(/-/g, ''),
+                    addressName: 'Główny adres',
+                    streetType: this.streetType.value,
+                    streetName: this.street.value,
+                    houseNumber: this.houseNumber.value,
+                    flatNumber: this.flatNumber.value,
+                    city: this.city.value,
+                    postalCode: this.zipCode.value,
                 });
+                
+                this.resetFormValues();
+                this.$router.replace('/profile');
             } 
             catch (error) {
+                this.formInvalid = true;
                 this.error = error.message || 'Niepoprawne dane.';
             }
-
-            this.resetFormValues();
+        },
+        async loadStreetTypes() {
+            try {
+                await this.$store.dispatch('facilities/getStreetTypes');
+            }
+            catch (error) {
+                this.error = ERROR_DEFAULT_MSG;
+            }
         },
         validateForm() {
             this.resetFormValidation();
@@ -240,6 +273,7 @@ export default {
             this.taxIdentificationNumber.value = null;
             this.zipCode.value = null;
             this.city.value = '';
+            this.streetType.value = 1;
             this.street.value = '';
             this.houseNumber.value = null;
             this.flatNumber.value = null;
@@ -254,12 +288,20 @@ export default {
             this.taxIdentificationNumber.valid = true;
             this.zipCode.valid = true;
             this.city.valid = true;
+            this.streetType.valid = true;
             this.street.valid = true;
             this.houseNumber.valid = true;
             this.flatNumber.valid = true;
 
             this.formInvalid = false;
             this.error = null;
+        }
+    },
+    async created() {
+        try {
+            await this.loadStreetTypes();
+        } catch (error) {
+            console.error(error);
         }
     }
 }
@@ -294,7 +336,6 @@ section {
   display: block;
   width: 100%;
   font: inherit;
-  padding: 0.15rem;
   border: none;
   background-color: #fff;
   border: 2px solid #aaa;
@@ -311,7 +352,6 @@ section {
 
 input {
   font: inherit;
-  padding: 0.15rem;
   border: none;
   background-color: #fff;
   border: 2px solid #aaa;
@@ -352,6 +392,37 @@ input.error::placeholder {
     color: #b83f3f;
 }
 
+select {
+    font: inherit;
+    border: none;
+    background-color: #fff;
+    border: 2px solid #aaa;
+    border-radius: 30px;
+    padding: 6px 8px;
+    font-size: 16px;
+    max-height: 3rem;
+    margin-top: 3px;
+    outline: none;
+} 
+
+select:focus {
+    border-color: #5162c2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+} 
+
+select option {
+  background-color: #f1f1f1;
+  color: #333;
+  font-size: 14px;
+  padding: 5px 18px;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.2s ease;
+}
+
+select option:hover {
+  background-color: #e5e5e5;
+}
+
 p.error {
     color: #b83f3f; 
 }
@@ -385,5 +456,6 @@ p.error {
 
 .address-street-no {
     width: 20%;
+    padding: 12px 12px;
 }
 </style>

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-// import store from './store/index.js';
+import store from './store/index.js';
 
 import MainPage from './pages/MainPage.vue';
 import LoginPage from './pages/LoginPage.vue';
@@ -11,10 +11,25 @@ import NotFound from './pages/NotFound.vue';
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: '/', component: MainPage },
-        { path: '/login', component: LoginPage },
-        { path: '/register', component: RegisterPage },
-        { path: '/profile', component: MyDataPage },
+        { 
+            path: '/', 
+            component: MainPage 
+        },
+        { 
+            path: '/login', 
+            component: LoginPage,
+            meta: { requiresUnAuth: true } 
+        },
+        { 
+            path: '/register', 
+            component: RegisterPage,
+            meta: { requiresUnAuth: true } 
+        },
+        { 
+            path: '/profile', 
+            component: MyDataPage,
+            meta: { requiresAuth: true }
+        },
         // { path: '/coaches', component: CoachesList },
         // { 
         //     path: '/coaches/:id', 
@@ -31,16 +46,16 @@ const router = createRouter({
     ]
 });
 
-// router.beforeEach(function(to, from, next) {
-//     if (to.meta.requiresAuth && !store.getters.isAuth) {
-//         next('/auth');
-//     }
-//     else if (to.meta.requiresUnAuth && store.getters.isAuth) {
-//         next('/coaches');
-//     }
-//     else {
-//         next();
-//     }
-// });
+router.beforeEach(function(to, from, next) {
+    if (to.meta.requiresAuth && !store.getters['auth/isLogged']) {
+        next('/login');
+    }
+    else if (to.meta.requiresUnAuth && store.getters['auth/isLogged']) {
+        next('/notFound');
+    }
+    else {
+        next();
+    }
+});
 
 export default router;

@@ -94,9 +94,13 @@ export default {
             }
         }
     },
-    created() {
-        this.loadSpecialties();
-        this.loadCities();
+    async created() {
+        try {
+            await this.loadSpecialties();
+            await this.loadCities();
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
 </script>

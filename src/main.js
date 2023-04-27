@@ -12,6 +12,7 @@ import BaseBadge from './components/base/BaseBadge.vue';
 import BaseSpinner from './components/base/BaseSpinner.vue';
 import BaseDialog from './components/base/BaseDialog.vue';
 import BasePagination from './components/base/BasePagination.vue';
+import ConfirmDialog from './components/base/ConfirmDialog.vue';
 
 const app = createApp(App);
 
@@ -26,5 +27,6 @@ app.component('base-badge', BaseBadge);
 app.component('base-spinner', BaseSpinner);
 app.component('base-dialog', BaseDialog);
 app.component('base-pagination', BasePagination);
+app.component('confirm-dialog', ConfirmDialog);
 
 app.mount('#app');

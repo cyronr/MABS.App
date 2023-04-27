@@ -1,21 +1,33 @@
 <template>
     <div class="dropdown">
         <base-button mode="flat" @click="toggleDropdown">
-            {{ currentLoggedProfile.email }} ↓
+            {{ currentLoggedProfile.email }} <i class="fa-solid fa-caret-down"></i>
         </base-button> 
         <ul class="dropdown-menu" v-show="isDropdownOpen">
-            <li class="dropdown-item">Moi lekarze</li>
-            <li class="dropdown-item"> <hr /> </li>
-            <li class="dropdown-item">Moje wizyty</li>
-            <li class="dropdown-item"> <hr /> </li>
-            <li class="dropdown-item"  @click="chooseMenuOption('profile')">Moje konto</li>
-            <li class="dropdown-item"> <hr /> </li>
+            <div v-if="isFacilityProfile">
+                <li class="dropdown-item">Moi lekarze</li>
+                <li class="dropdown-item"> <hr /> </li>
+            </div>
+            <div v-if="isFacilityProfile">
+                <li class="dropdown-item">Moje adresy</li>
+                <li class="dropdown-item"> <hr /> </li>
+            </div>
+            <div v-if="isPatientProfile">
+                <li class="dropdown-item">Moje wizyty</li>
+                <li class="dropdown-item"> <hr /> </li>
+            </div>
+            <div>
+                <li class="dropdown-item"  @click="chooseMenuOption('profile')">Moje konto</li>
+                <li class="dropdown-item"> <hr /> </li>
+            </div>
             <li class="dropdown-item logout" @click="logout">Wyloguj się</li>
         </ul>
     </div>
 </template>
   
 <script>
+import { ProfileType } from '../../consts';
+
 export default {
     data() {
         return {
@@ -25,6 +37,12 @@ export default {
     computed: {
         currentLoggedProfile() {
             return this.$store.getters['auth/loggedProfile'];
+        },
+        isFacilityProfile() {
+            return this.currentLoggedProfile.profileType === ProfileType.Facility;
+        },
+        isPatientProfile() {
+            return this.currentLoggedProfile.profileType === ProfileType.Patient;
         }
     },
     methods: {
@@ -54,6 +72,7 @@ export default {
 </script>
   
 <style scoped>
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
 .dropdown {
   position: relative;
 }
