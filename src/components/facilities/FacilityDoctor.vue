@@ -43,12 +43,31 @@
         </base-card>
     </li>
     <confirm-dialog 
-        :show="confirmDialog.opened" 
+        :show="confirmRemoveDialogOpened" 
         title="Potwierdzenie"
         @cancelClick="removeCancel" 
         @confirmClick="removeConfirm"
     >
         <p>Czy na pewno chcesz usunąć lekarza {{ this.doctor.firstName.value}} {{ this.doctor.lastName.value }}?</p>
+    </confirm-dialog>
+    <confirm-dialog 
+        :show="doctorAlreadyExistsDialogOpened" 
+        title="Taki lekarz już istnieje"
+        @cancelClick="addDoctorCancel" 
+        @confirmClick="addDoctorConfirm"
+    >
+        <p>W systemie istnieje już lekarz o takich danych:</p>
+        <p><strong>{{ existingDoctor.title.shortName }} {{ existingDoctor.firstname }} {{ existingDoctor.lastname }}</strong></p>
+        <p>
+            Specjalizacje:
+            <ul>
+                <li v-for="speciality in existingDoctor.specialties" :key="speciality.name">
+                    {{ speciality.name }}
+                </li>
+            </ul>
+        </p>
+        <br />
+        <p>Czy chcesz dodać tego lekarza do Twojej placówki? Wybranie <i>Anuluj</i> spowoduje dodnie nowego lekarza do systemu i podpięcie go do Twojej placówki.</p>
     </confirm-dialog>
 </template>
 
@@ -95,14 +114,14 @@ export default {
                     valid: true
                 }
             },
+            existingDoctor: null,
 
             editMode: false,
             formInvalid: false,
             error: null,
 
-            confirmDialog: {
-                opened: false
-            },
+            confirmRemoveDialogOpened: false,
+            doctorAlreadyExistsDialogOpened: false,
 
             pageLoaded: false
         }   
@@ -134,10 +153,10 @@ export default {
             this.editMode = true;
         },
         remove() {
-            this.confirmDialog.opened = true;
+            this.confirmRemoveDialogOpened = true;
         },
         removeCancel() {
-            this.confirmDialog.opened = false;
+            this.confirmRemoveDialogOpened = false;
         },
         removeConfirm() {
             this.$emit('removeDoctor', this.id);
@@ -148,20 +167,23 @@ export default {
                 return;
             }
             
-            this.$store.commit('setIsPageLoading', true, { root: true });
-            let specialties = [];
-            for(var key in this.doctor.specialties.value) {
-                specialties.push(this.getSpecialtyIdByName(this.doctor.specialties.value[key].name));
+            if (this.newDoctorMode) {
+                await this.checkDoctorExists();
             }
+            else {
+                await this.upsertDoctor();
+            }
+        },
+        async upsertDoctor() {
             const doctor = {
                 id: this.id,
                 titleId: this.doctor.title.value,
                 firstName: this.doctor.firstName.value,
                 lastName: this.doctor.lastName.value,
-                specialties: specialties
+                specialties: this.getSpecialtiesIds()
             }
 
-            console.log(doctor);
+            this.$store.commit('setIsPageLoading', true, { root: true });
             try {
                 if (this.newDoctorMode) {
                     const response = await axios.post(`${API_URL}/doctors`, doctor);
@@ -175,7 +197,6 @@ export default {
                 this.editMode = false;
             }
             catch (error) {
-                console.log(error);
                 this.formInvalid = true;
 
                 if (API_BUSINESS_ERROR_CODES.includes(error.response.status)) {
@@ -195,6 +216,49 @@ export default {
 
                 this.$store.commit('setIsPageLoading', false, { root: true });
             } 
+        },
+        async checkDoctorExists() {
+            this.existingDoctor = null;
+            this.$store.commit('setIsPageLoading', true, { root: true });
+            try {
+                
+                const response = await axios.get(`${API_URL}/doctors/find`, {
+                    params: {
+                        firstName: this.doctor.firstName.value,
+                        lastName: this.doctor.lastName.value,
+                        specialties: this.getSpecialtiesIds()
+                    }
+                });
+                
+                if (response.status === 200) {
+                    this.existingDoctor = response.data;
+                    this.doctorAlreadyExistsDialogOpened = true;
+
+                    console.log(this.existingDoctor);
+                }
+                else {
+                    this.upsertDoctor();
+                }
+
+
+                this.$store.commit('setIsPageLoading', false, { root: true });
+                this.editMode = false;
+            }
+            catch (error) {
+                this.formInvalid = true;
+                this.error = 'Nieoczekiwany błąd aplikacji.';
+                this.$store.commit('setIsPageLoading', false, { root: true });
+            }
+        },
+        addDoctorCancel() {
+            this.doctorAlreadyExistsDialogOpened = false;
+            this.existingDoctor = null;
+            this.upsertDoctor();
+        },
+        addDoctorConfirm() {
+            this.doctorAlreadyExistsDialogOpened = false;
+            this.$emit('addDoctor', this.existingDoctor.id);
+            this.existingDoctor = null;
         },
         cancel() {
             if (!this.newDoctorMode) {
@@ -260,7 +324,14 @@ export default {
         },
         getSpecialtyIdByName(name) {
             return this.allSpecialties.find(s => s.name === name).id;
-        }
+        },
+        getSpecialtiesIds() {
+            let specialties = [];
+            for(var key in this.doctor.specialties.value) {
+                specialties.push(this.getSpecialtyIdByName(this.doctor.specialties.value[key].name));
+            }
+            return specialties;
+        },
     },
     async beforeMount() {
         if (!this.newDoctorMode) {
