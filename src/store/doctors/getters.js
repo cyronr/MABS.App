@@ -8,6 +8,9 @@ export default {
     specialties(state) {
         return state.specialties;
     },
+    titles(state) {
+        return state.titles;
+    },
     cities(state) {
         return state.cities;
     },

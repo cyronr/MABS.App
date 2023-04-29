@@ -13,7 +13,7 @@
         </section>
         <menu>
           <base-button @click="confirm">Potwierdź</base-button>
-          <base-button @click="cancel">Anuluj</base-button>
+          <base-button @click="cancel" class="cancel-button">Anuluj</base-button>
         </menu>
       </dialog>
     </transition>
@@ -91,6 +91,18 @@ menu {
   justify-content: flex-end;
   margin: 0;
 }
+
+.cancel-button {
+  background-color: #f75f5f;
+  border: 1px solid #f75f5f;
+}
+
+.cancel-button:hover,
+.cancel-button:active {
+  background-color: #dd5555;
+  border-color: #dd5555;
+}
+
 
 .dialog-enter-from,
 .dialog-leave-to {

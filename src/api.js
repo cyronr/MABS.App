@@ -8,6 +8,7 @@ export function handleAPIError(error) {
     console.log(error);
     if (API_BUSINESS_ERROR_CODES.includes(error.response.status)) {
         const responseErrors = error.response.data.errors;
+        
         let errors = '';
         for(const key in responseErrors) {
             errors += responseErrors[key] + '\n';

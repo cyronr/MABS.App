@@ -5,7 +5,7 @@ import store from './store/index.js';
 import MainPage from './pages/MainPage.vue';
 import LoginPage from './pages/LoginPage.vue';
 import RegisterPage from './pages/RegisterPage.vue';
-import MyDataPage from './pages/MyDataPage.vue';
+import ProfilePage from './pages/ProfilePage.vue';
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({
@@ -27,7 +27,7 @@ const router = createRouter({
         },
         { 
             path: '/profile', 
-            component: MyDataPage,
+            component: ProfilePage,
             meta: { requiresAuth: true }
         },
         // { path: '/coaches', component: CoachesList },

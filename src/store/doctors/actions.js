@@ -38,6 +38,19 @@ export default {
             handleAPIError();
         }        
     },
+    async getTitles(context) {
+        context.commit('setIsPageLoading', true, { root: true })
+
+        try {
+            const response = await axios.get(`${API_URL}/doctors/dict/titles`);
+
+            context.commit('setTitles', response.data);
+            context.commit('setIsPageLoading', false, { root: true });
+        }
+        catch (error) {
+            handleAPIError();
+        }        
+    },
     async getCities(context) {
         context.commit('setIsPageLoading', true, { root: true })
 

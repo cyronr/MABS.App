@@ -4,7 +4,7 @@
             {{ currentLoggedProfile.email }} <i class="fa-solid fa-caret-down"></i>
         </base-button> 
         <ul class="dropdown-menu" v-show="isDropdownOpen">
-            <div v-if="isFacilityProfile">
+            <!-- <div v-if="isFacilityProfile">
                 <li class="dropdown-item">Moi lekarze</li>
                 <li class="dropdown-item"> <hr /> </li>
             </div>
@@ -15,7 +15,7 @@
             <div v-if="isPatientProfile">
                 <li class="dropdown-item">Moje wizyty</li>
                 <li class="dropdown-item"> <hr /> </li>
-            </div>
+            </div> -->
             <div>
                 <li class="dropdown-item"  @click="chooseMenuOption('profile')">Moje konto</li>
                 <li class="dropdown-item"> <hr /> </li>
@@ -26,8 +26,6 @@
 </template>
   
 <script>
-import { ProfileType } from '../../consts';
-
 export default {
     data() {
         return {
@@ -39,10 +37,10 @@ export default {
             return this.$store.getters['auth/loggedProfile'];
         },
         isFacilityProfile() {
-            return this.currentLoggedProfile.profileType === ProfileType.Facility;
+            return this.$store.getters['auth/isFacilityProfile'];
         },
         isPatientProfile() {
-            return this.currentLoggedProfile.profileType === ProfileType.Patient;
+            return this.$store.getters['auth/isPatientProfile'];
         }
     },
     methods: {
@@ -88,6 +86,7 @@ export default {
   max-height: 0;
   overflow-y: auto;
   min-width: 130px; 
+  margin-right: 1.5rem;
 }
 
 .dropdown-item {

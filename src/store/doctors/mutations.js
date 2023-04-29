@@ -5,6 +5,9 @@ export default {
     setSpecialties(state, payload) {
         state.specialties = payload;
     },
+    setTitles(state, payload) {
+        state.titles = payload;
+    },
     setCities(state, payload) {
         state.cities = payload;
     },

@@ -1,35 +1,37 @@
 <template>
     <base-card v-if="facility">
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent>
             <section>
                 <div class="form-control">
                     <label for="shortName">Nazwa skrócona: </label>
-                    <input type="text" id="shortName" :placeholder="shortName.value" v-model="shortName.value" :class="{error: !shortName.valid}" />       
+                    <input type="text" id="shortName" v-model="shortName.value" :disabled="!editMode" :class="{error: !shortName.valid}" />       
                 </div>
                 <div class="form-control">
                     <label for="fullName">Pełna nazwa: </label>
-                    <input type="text" id="fullName" :placeholder="fullName.value" v-model="fullName.value" :class="{error: !fullName.valid}" />       
+                    <input type="text" id="fullName" v-model="fullName.value" :disabled="!editMode" :class="{error: !fullName.valid}" />       
                 </div>
                 <div class="form-control">
                     <label for="taxIdentificationNumber">NIP: </label>
-                    <input type="text" id="taxIdentificationNumber" :placeholder="taxIdentificationNumber.value" v-mask="'###-###-##-##'" v-model="taxIdentificationNumber.value" :class="{error: !taxIdentificationNumber.valid}" />       
+                    <input type="text" id="taxIdentificationNumber" v-mask="'###-###-##-##'" v-model="taxIdentificationNumber.value" :disabled="!editMode" :class="{error: !taxIdentificationNumber.valid}" />       
                 </div>
             </section>
             <section v-if="formInvalid">
                 <p class="error" v-html="error.replace('\n', '<br/>')"></p>
             </section>
-            <section>
-                <base-button>Zapisz</base-button>
+            <section class="actions">
+                <base-button v-if="!editMode" @click="edit">Edytuj</base-button>
+                <base-button v-if="editMode" @click="save">Zapisz</base-button>
+                <base-button v-if="editMode" @click="cancel" class="action-red">Anuluj</base-button>
             </section>
         </form>
     </base-card>
     <confirm-dialog 
         :show="confirmDialogVisible" 
-        title="Czy chcesz zapisać zmiany?"
+        title="Potwierdzenie"
         @cancelClick="cancelOperation" 
         @confirmClick="confirmOperation"
     >
-        <p>Jasna dupa</p>
+        <p>Czy na pewno chcesz zapisać wprowadzone zmiany?</p>
     </confirm-dialog>
 </template>
 
@@ -50,6 +52,7 @@ export default {
                 valid: true
             },
 
+            editMode: false,
             formInvalid: false,
             error: null,
 
@@ -65,7 +68,7 @@ export default {
         }
     },
     methods: {
-        async submitForm() {
+        save() {
             this.validateForm();
             if (this.formInvalid) {
                 return;
@@ -73,11 +76,21 @@ export default {
 
             this.confirmDialogVisible = true;
         },
+        edit() {
+            this.editMode = true;
+        },
+        cancel() {
+            this.setFormValues();
+            this.resetFormValidation();
+            this.editMode = false;
+            this.error = null;
+            this.formInvalid = false;
+        },
         cancelOperation() {
             this.confirmDialogVisible = false;
+            this.cancel();
         },
         async confirmOperation() {
-            console.log('emit-confirm-2');
             this.confirmDialogVisible = false;
 
             try {
@@ -89,6 +102,7 @@ export default {
                 });
                 
                 this.setFormValues();
+                this.editMode = false;
             } 
             catch (error) {
                 this.formInvalid = true;
@@ -132,7 +146,6 @@ export default {
         }
     },
     async beforeMount() {
-        await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.currentLoggedProfile.id });
         this.setFormValues();
     }
 }
@@ -203,5 +216,28 @@ p.error {
 
 button {
     padding: 1rem 3rem;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 3rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.actions button {
+    padding: 0.8rem 3rem;
+}
+
+.action-red {
+    background-color: #f75f5f;
+    border: 1px solid #f75f5f;
+}
+
+.action-red:hover,
+.action-red:active {
+  background-color: #dd5555;
+  border-color: #dd5555;
 }
 </style>
