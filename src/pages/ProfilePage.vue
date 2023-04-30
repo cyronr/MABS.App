@@ -13,6 +13,7 @@
               <section>
                 <profile-data v-if="activeTab === 'data'"></profile-data>
                 <facility-doctors v-else-if="activeTab === 'doctors'"></facility-doctors>
+                <facility-addresses v-else-if="activeTab === 'addresses'"></facility-addresses>
               </section>
             </div>
         </div>
@@ -23,12 +24,14 @@
 import ProfileMenu from '../components/profiles/ProfileMenu.vue';
 import ProfileData from '../components/profiles/ProfileData.vue';
 import FacilityDoctors from '../components/facilities/FacilityDoctors.vue';
+import FacilityAddresses from '../components/facilities/FacilityAddresses.vue';
 
 export default {
   components: {
     ProfileMenu,
     ProfileData,
-    FacilityDoctors
+    FacilityDoctors,
+    FacilityAddresses
   },
   data() {
     return {

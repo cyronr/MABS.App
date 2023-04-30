@@ -3,7 +3,7 @@
     <div v-if="show" @click="tryClose" class="backdrop"></div>
     <transition name="dialog">
       <dialog open v-if="show" :class="{transparent: transparent}">
-        <header v-if="!transparent">
+        <header v-if="!transparent" :class="{ error: error }">
           <slot name="header">
             <h2>{{ title }}</h2>
           </slot>
@@ -38,6 +38,11 @@ export default {
       default: false,
     },
     transparent: {
+      type: Boolean,
+      required: false,
+      default: false, 
+    },
+    error: {
       type: Boolean,
       required: false,
       default: false, 
@@ -126,6 +131,10 @@ menu {
 .transparent {
   background-color: rgba(0, 0, 0, 0); 
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.error {
+  background-color: #dd5555;
 }
 
 @media (min-width: 768px) {

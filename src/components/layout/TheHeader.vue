@@ -1,7 +1,11 @@
 <template>
     <header>
         <nav>
-          <h1><router-link to="/" @click="goToHomePage">(nie)znanylekarz.cr</router-link></h1>
+          <h1>
+            <router-link to="/" @click="goToHomePage">
+              <i class="fa-solid fa-laptop-medical"></i> MediReserve
+            </router-link>
+          </h1>
           <ul>
             <li v-if="!isLogged">
               <router-link to="/login">Zaloguj się</router-link>

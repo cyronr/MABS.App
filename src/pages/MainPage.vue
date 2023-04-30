@@ -2,7 +2,7 @@
     <base-page>
         <doctor-search @search="searchDoctors"></doctor-search>
         <section>
-            <base-dialog :show="!!error" title="Błąd :(" @close="confirmError">
+            <base-dialog error :show="!!error" title="Błąd :(" @close="confirmError">
                 <p> {{ error }} </p>
             </base-dialog>
             <doctors-list></doctors-list>
