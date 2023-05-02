@@ -15,17 +15,24 @@ const store = createStore({
     },
     state() {
         return {
-            isPageLoading: false
+            isPageLoading: false,
+            errorMessage: null
         }
     },
     getters: {
         isPageLoading(state) {
             return state.isPageLoading;
+        },
+        errorMessage(state) {
+            return state.errorMessage;
         }
     },
     mutations: {
         setIsPageLoading(state, payload) {
             state.isPageLoading = payload;
+        },
+        setErrorMessage(state, payload) {
+            state.errorMessage = payload;
         }
     }
 });

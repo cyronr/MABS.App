@@ -137,8 +137,11 @@ export default {
         authToken() {
             return this.$store.getters['auth/token'];
         },
+        facility() {
+            return this.$store.getters['facilities/facility']
+        },
         doctorDetailsLink() {
-            return  '/doctors/' + this.id + '?mode=facility';
+            return  '/doctors/' + this.id + '?mode=facility' + '&facilityId=' + this.facility.id;
         },
     },
     methods: {

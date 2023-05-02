@@ -3,13 +3,13 @@ import { createRouter, createWebHistory } from "vue-router";
 import store from './store/index.js';
 
 import MainPage from './pages/MainPage.vue';
-import LoginPage from './pages/LoginPage.vue';
-import RegisterPage from './pages/RegisterPage.vue';
+import LoginPage from './pages/auth/LoginPage.vue';
+import RegisterPage from './pages/auth/RegisterPage.vue';
 import ProfilePage from './pages/profile/ProfilePage.vue';
 import ProfileDataPage from './pages/profile/ProfileDataPage.vue';
 import ProfileDoctorsPage from './pages/profile/ProfileDoctorsPage.vue';
 import ProfileAddressesPage from './pages/profile/ProfileAddressesPage.vue';
-import DoctorPage from './pages/DoctorPage.vue';
+import DoctorPage from './pages/doctors/DoctorPage.vue';
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({

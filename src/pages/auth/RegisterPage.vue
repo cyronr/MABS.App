@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import RegisterPatient from '../components/registration/RegisterPatient.vue';
-import RegisterFacility from '../components/registration/RegisterFacility.vue';
+import RegisterPatient from '../../components/registration/RegisterPatient.vue';
+import RegisterFacility from '../../components/registration/RegisterFacility.vue';
 
 export default {
     components: {

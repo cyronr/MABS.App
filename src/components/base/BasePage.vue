@@ -2,6 +2,9 @@
     <base-dialog :show="isPageLoading" title="Authenticating..." fixed transparent>
         <base-spinner></base-spinner>
     </base-dialog>
+    <base-dialog :show="!!errorMessage" title="Błąd :(" error @close="closeErrorDlg">
+        <p> {{ errorMessage }} </p>
+    </base-dialog>
     <div class="page-container">
         <the-header></the-header>
         <main>
@@ -23,6 +26,14 @@ export default {
     computed: {
         isPageLoading() {
             return this.$store.getters['isPageLoading'];  
+        },
+        errorMessage() {
+            return this.$store.getters['errorMessage'];  
+        }
+    },
+    methods: {
+        closeErrorDlg() {
+            this.$store.commit('setErrorMessage', null)
         }
     }
 };
