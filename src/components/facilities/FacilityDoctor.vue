@@ -34,7 +34,8 @@
                     <p class="error" v-html="error.replace('\n', '<br/>')"></p>
                 </section>
                 <section class="actions">
-                    <base-button v-if="!editMode" @click="edit">Edytuj</base-button>
+                    <base-button v-if="!editMode" link :to="doctorDetailsLink">Pokaż szczegóły pracy</base-button>
+                    <base-button v-if="!editMode" @click="edit">Edytuj dane</base-button>
                     <base-button v-if="!editMode" @click="remove" class="action-red">Usuń</base-button>
                     <base-button v-if="editMode" @click="save">Zapisz</base-button>
                     <base-button v-if="editMode" @click="cancel" class="action-red">Anuluj</base-button>
@@ -132,7 +133,13 @@ export default {
         },
         allSpecialties() {
             return this.$store.getters['doctors/specialties']; 
-        }
+        },
+        authToken() {
+            return this.$store.getters['auth/token'];
+        },
+        doctorDetailsLink() {
+            return  '/doctors/' + this.id + '?mode=facility';
+        },
     },
     methods: {
         setDoctor() {
@@ -186,11 +193,15 @@ export default {
             this.$store.commit('setIsPageLoading', true, { root: true });
             try {
                 if (this.newDoctorMode) {
-                    const response = await axios.post(`${API_URL}/doctors`, doctor);
+                    const response = await axios.post(`${API_URL}/doctors`, doctor, {
+                        headers: { Authorization: `Bearer ${this.authToken}` }
+                    });
                     this.$emit('addDoctor', response.data.id);
                 }
                 else {
-                    await axios.put(`${API_URL}/doctors`, doctor);
+                    await axios.put(`${API_URL}/doctors`, doctor, {
+                        headers: { Authorization: `Bearer ${this.authToken}` }
+                    });
                 }
 
                 this.$store.commit('setIsPageLoading', false, { root: true });
@@ -239,7 +250,6 @@ export default {
                 else {
                     this.upsertDoctor();
                 }
-
 
                 this.$store.commit('setIsPageLoading', false, { root: true });
                 this.editMode = false;

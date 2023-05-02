@@ -2,11 +2,15 @@
     <base-card vertical>
         <ul>
             <div v-if="isFacilityProfile">
-                <li :class="{active: activeTab === 'doctors'}" @click="changeTab('doctors')">Moi lekarze</li>
+                <li :class="{active: activeTab === 'doctors'}" @click="changeTab('doctors')">
+                    <router-link :to="doctorsLink">Moi lekarze</router-link>
+                </li>
                 <li> <hr /> </li>
             </div>
             <div v-if="isFacilityProfile">
-                <li :class="{active: activeTab === 'addresses'}" @click="changeTab('addresses')">Moje adresy</li>
+                <li :class="{active: activeTab === 'addresses'}" @click="changeTab('addresses')">
+                    <router-link :to="addressesLink">Moje adresy</router-link>
+                </li>
                 <li> <hr /> </li>
             </div>
             <div v-if="isPatientProfile">
@@ -14,7 +18,9 @@
                 <li> <hr /> </li>
             </div>
             <div>
-                <li :class="{active: activeTab == 'data'}" @click="changeTab('data')">Moje dane</li>
+                <li :class="{active: activeTab == 'data'}" @click="changeTab('data')">
+                    <router-link :to="dataLink">Moje dane</router-link>
+                </li>
                 <li> <hr /> </li>
             </div>
             <li class="delete-profile">Usuń konto</li>
@@ -26,9 +32,14 @@
 export default {
     emits: ['tabChanged'],
     props: {
-        activeTab: {
+        profileId: {
             type: String,
             required: true
+        }
+    },
+    data() {
+        return {
+            activeTab: 'data'
         }
     },
     computed: {
@@ -40,10 +51,20 @@ export default {
         },
         isPatientProfile() {
             return this.$store.getters['auth/isPatientProfile'];
+        },
+        doctorsLink() {
+            return `/profile/${this.profileId}/doctors`;
+        },
+        addressesLink() {
+            return `/profile/${this.profileId}/addresses`;
+        },
+        dataLink() {
+            return `/profile/${this.profileId}`;
         }
     },
     methods: {
         changeTab(tab) {
+            this.activeTab = tab;
             this.$emit('tabChanged', tab);
         }
     }
@@ -68,6 +89,11 @@ ul li hr {
     border-top: 1px solid #ccc;
     width: 95%;
     margin: 0;
+}
+
+ul li a {
+    text-decoration: none;
+    color: black;
 }
 
 ul li:hover,

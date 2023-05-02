@@ -36,7 +36,7 @@
 <script>
 import axios from 'axios';
 import { API_URL, handleAPIError, API_BUSINESS_ERROR_CODES } from '../../api';
-import FacilityAddress from './FacilityAddress';
+import FacilityAddress from '../../components/facilities/FacilityAddress.vue';
 
 export default {
     components: {
@@ -58,6 +58,9 @@ export default {
         },
         showNewAddressButton() {
             return !this.newAddressFormVisible;
+        },
+        authToken() {
+            return this.$store.getters['auth/token'];
         }
     },
     methods: {
@@ -67,7 +70,9 @@ export default {
             this.$store.commit('setIsPageLoading', true, { root: true })
 
             try {
-                const response = await axios.get(`${API_URL}/facilities/${this.facility.id}`);
+                const response = await axios.get(`${API_URL}/facilities/${this.facility.id}`, {
+                    headers: { Authorization: `Bearer ${this.authToken}` }
+                });
                 
                 this.parseResponse(response);
                 this.$store.commit('setIsPageLoading', false, { root: true });
@@ -91,7 +96,9 @@ export default {
             this.$store.commit('setIsPageLoading', true, { root: true })
 
             try {
-                const response = await axios.delete(`${API_URL}/facilities/${this.facility.id}/addresses/${addressId}`);
+                const response = await axios.delete(`${API_URL}/facilities/${this.facility.id}/addresses/${addressId}`, {
+                    headers: { Authorization: `Bearer ${this.authToken}` }
+                });
                 
                 this.parseResponse(response);
                 this.$store.commit('setIsPageLoading', false, { root: true });
@@ -103,7 +110,9 @@ export default {
         async addAddress(address) {
             this.$store.commit('setIsPageLoading', true, { root: true })
             try {
-                const response = await axios.post(`${API_URL}/facilities/${this.facility.id}/addresses`, address);
+                const response = await axios.post(`${API_URL}/facilities/${this.facility.id}/addresses`, address, {
+                    headers: { Authorization: `Bearer ${this.authToken}` }
+                });
                 
                 this.parseResponse(response);
 
@@ -139,7 +148,9 @@ export default {
             this.$store.commit('setIsPageLoading', true, { root: true })
 
             try {
-                const response = await axios.put(`${API_URL}/facilities/${this.facility.id}/addresses`, address);
+                const response = await axios.put(`${API_URL}/facilities/${this.facility.id}/addresses`, address, {
+                    headers: { Authorization: `Bearer ${this.authToken}` }
+                });
                 this.parseResponse(response);
 
                 this.$store.commit('setIsPageLoading', false, { root: true });

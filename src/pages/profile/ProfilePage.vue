@@ -2,7 +2,7 @@
     <base-page>
         <div class="page">
             <div class="menu">
-              <profile-menu :activeTab="activeTab" @tabChanged="changeTab"></profile-menu>
+              <profile-menu :profileId="id" @tabChanged="changeTab"></profile-menu>
             </div>
             <div class="content" v-if="isPageReady">
               <header>
@@ -11,9 +11,7 @@
                 </base-card>
               </header>
               <section>
-                <profile-data v-if="activeTab === 'data'"></profile-data>
-                <facility-doctors v-else-if="activeTab === 'doctors'"></facility-doctors>
-                <facility-addresses v-else-if="activeTab === 'addresses'"></facility-addresses>
+                <router-view></router-view>
               </section>
             </div>
         </div>
@@ -21,17 +19,12 @@
 </template>
 
 <script>
-import ProfileMenu from '../components/profiles/ProfileMenu.vue';
-import ProfileData from '../components/profiles/ProfileData.vue';
-import FacilityDoctors from '../components/facilities/FacilityDoctors.vue';
-import FacilityAddresses from '../components/facilities/FacilityAddresses.vue';
+import ProfileMenu from '../../components/profiles/ProfileMenu.vue';
 
 export default {
+  props: ['id'],
   components: {
-    ProfileMenu,
-    ProfileData,
-    FacilityDoctors,
-    FacilityAddresses
+    ProfileMenu
   },
   data() {
     return {
@@ -39,9 +32,6 @@ export default {
     }
   },
   computed: {
-        currentLoggedProfile() {
-            return this.$store.getters['auth/loggedProfile'];
-        },
         isFacilityProfile() {
             return this.$store.getters['auth/isFacilityProfile'];
         },
@@ -79,7 +69,7 @@ export default {
     }
   },
   async beforeMount() {
-    await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.currentLoggedProfile.id });
+    await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.id });
   }
 }
 </script>

@@ -39,7 +39,7 @@
 <script>
 import axios from 'axios';
 import { API_URL, handleAPIError } from '../../api';
-import FacilityDoctor from './FacilityDoctor';
+import FacilityDoctor from '../../components/facilities/FacilityDoctor.vue';
 
 export default {
     components: {
@@ -57,6 +57,9 @@ export default {
     computed: {
         facility() {
             return this.$store.getters['facilities/facility'];
+        },
+        authToken() {
+            return this.$store.getters['auth/token'];
         },
         showPagination() {
             return this.doctors.length > 0;
@@ -86,6 +89,9 @@ export default {
                         PageNumber: pageNumber,
                         PageSize: pageSize
                     }
+                },
+                {
+                    headers: { Authorization: `Bearer ${this.authToken}` }
                 });
                 
                 this.parseResponse(response);
@@ -110,6 +116,9 @@ export default {
                         PageNumber: 1,
                         PageSize: 5
                     }
+                },
+                {
+                    headers: { Authorization: `Bearer ${this.authToken}` }
                 });
                 
                 this.parseResponse(response);
@@ -121,13 +130,13 @@ export default {
         },
         async addDoctor(doctorId) {
             this.$store.commit('setIsPageLoading', true, { root: true })
-
             try {
                 const response = await axios.post(`${API_URL}/facilities/${this.facility.id}/doctors/${doctorId}`, null, {
                     params: {
                         PageNumber: 1,
                         PageSize: 5
-                    }
+                    },
+                    headers: { Authorization: `Bearer ${this.authToken}` }
                 });
                 
                 this.parseResponse(response);

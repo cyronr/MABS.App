@@ -5,7 +5,11 @@ import store from './store/index.js';
 import MainPage from './pages/MainPage.vue';
 import LoginPage from './pages/LoginPage.vue';
 import RegisterPage from './pages/RegisterPage.vue';
-import ProfilePage from './pages/ProfilePage.vue';
+import ProfilePage from './pages/profile/ProfilePage.vue';
+import ProfileDataPage from './pages/profile/ProfileDataPage.vue';
+import ProfileDoctorsPage from './pages/profile/ProfileDoctorsPage.vue';
+import ProfileAddressesPage from './pages/profile/ProfileAddressesPage.vue';
+import DoctorPage from './pages/DoctorPage.vue';
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({
@@ -26,8 +30,32 @@ const router = createRouter({
             meta: { requiresUnAuth: true } 
         },
         { 
-            path: '/profile', 
+            path: '/profile/:id', 
             component: ProfilePage,
+            props: true,
+            meta: { requiresAuth: true },
+            children: [
+                { 
+                    path: '', 
+                    component: ProfileDataPage,
+                    meta: { requiresAuth: true } 
+                },
+                { 
+                    path: 'doctors', 
+                    component: ProfileDoctorsPage,
+                    meta: { requiresAuth: true } 
+                },
+                { 
+                    path: 'addresses', 
+                    component: ProfileAddressesPage,
+                    meta: { requiresAuth: true } 
+                }
+            ]
+        }, 
+        { 
+            path: '/doctors/:id', 
+            component: DoctorPage,
+            props: true,
             meta: { requiresAuth: true }
         },
         // { path: '/coaches', component: CoachesList },

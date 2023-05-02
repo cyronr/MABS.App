@@ -6,7 +6,11 @@ export default {
         context.commit('setIsPageLoading', true, { root: true })
 
         try {
-            const response = await axios.get(`${API_URL}/facilities/byProfile/${payload.profileId}`);
+            const token = (context.rootGetters['auth/token']);
+            const response = await axios.get(`${API_URL}/facilities/byProfile/${payload.profileId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
             context.commit('setFacility', response.data);
             context.commit('setIsPageLoading', false, { root: true });
         }
@@ -18,11 +22,15 @@ export default {
         context.commit('setIsPageLoading', true, { root: true })
 
         try {
+            const token = (context.rootGetters['auth/token']);
             const response = await axios.put(`${API_URL}/facilities`, {
                 id: payload.facilityId,
                 shortName: payload.shortName,
                 name: payload.name,
                 taxIdentificationNumber: payload.taxIdentificationNumber
+            },
+            {
+                headers: { Authorization: `Bearer ${token}` }
             });
 
             context.commit('setFacility', response.data);

@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import FacilityData from '../facilities/FacilityData.vue';
-import PatientData from '../patients/PatientData.vue';
+import FacilityData from '../../components/facilities/FacilityData.vue';
+import PatientData from '../../components/patients/PatientData.vue';
 
 export default {
     components: {
@@ -13,9 +13,6 @@ export default {
         PatientData
     },
     computed: {
-        currentLoggedProfile() {
-            return this.$store.getters['auth/loggedProfile'];
-        },
         isFacilityProfile() {
             return this.$store.getters['auth/isFacilityProfile'];
         },

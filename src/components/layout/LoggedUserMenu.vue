@@ -17,7 +17,9 @@
                 <li class="dropdown-item"> <hr /> </li>
             </div> -->
             <div>
-                <li class="dropdown-item"  @click="chooseMenuOption('profile')">Moje konto</li>
+                <li class="dropdown-item">
+                    <router-link :to="myProfileLink">Moje konto</router-link>
+                </li>
                 <li class="dropdown-item"> <hr /> </li>
             </div>
             <li class="dropdown-item logout" @click="logout">Wyloguj się</li>
@@ -41,6 +43,9 @@ export default {
         },
         isPatientProfile() {
             return this.$store.getters['auth/isPatientProfile'];
+        },
+        myProfileLink() {
+            return `/profile/${this.currentLoggedProfile.id}`;
         }
     },
     methods: {
@@ -103,6 +108,11 @@ export default {
     border-top: 1px solid #ccc;
     width: 95%;
     margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
 }
 
 .logout {
