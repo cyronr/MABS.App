@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL, handleAPIError } from '../../api';
+import { ProfileType } from '../../consts';
 
 export default {
     async login(context, payload) {
@@ -80,6 +81,13 @@ export default {
         localStorage.setItem('profile', JSON.stringify(profile));
         context.commit('setToken', { token: token });
         context.commit('setloggedProfile', profile);
+
+        if (profile.profileType === ProfileType.Patient) {
+            context.dispatch('patients/getPatientByProfile', { profileId: profile.id }, { root: true })
+        }
+        else if (profile.profileType === ProfileType.Facility) {
+            context.dispatch('facilities/getFacilityByProfile', { profileId: profile.id }, { root: true })
+        }
     },
     logout(context) {
         localStorage.removeItem('token');

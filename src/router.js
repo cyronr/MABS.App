@@ -10,6 +10,7 @@ import ProfileDataPage from './pages/profile/ProfileDataPage.vue';
 import ProfileDoctorsPage from './pages/profile/ProfileDoctorsPage.vue';
 import ProfileAddressesPage from './pages/profile/ProfileAddressesPage.vue';
 import DoctorPage from './pages/doctors/DoctorPage.vue';
+import AppointmentPage from './pages/appointments/AppointmentPage.vue';
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({
@@ -58,18 +59,12 @@ const router = createRouter({
             props: true,
             meta: { requiresAuth: true }
         },
-        // { path: '/coaches', component: CoachesList },
-        // { 
-        //     path: '/coaches/:id', 
-        //     component: CoachDetail, 
-        //     props: true,
-        //     children: [
-        //         { path: 'contact', component: ContactCoach },
-        //     ]
-        // },
-        // { path: '/register', component: CoachRegister, meta: { requiresAuth: true } },
-        // { path: '/requests', component: RequestsReceived, meta: { requiresAuth: true } },
-        // { path: '/auth', component: UserAuth, meta: { requiresUnAuth: true } },
+        { 
+            path: '/appointments/:id', 
+            component: AppointmentPage,
+            props: true,
+            meta: { requiresAuth: true }
+        },
         { path: '/:notFound(.*)', component: NotFound }
     ]
 });

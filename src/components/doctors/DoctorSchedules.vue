@@ -1,31 +1,40 @@
 <template>
     <base-card>Harmonogram</base-card>
-    <section class="new-schedule">
-        <div class="centered-button" v-if="!newScheduleFormVisible">
-            <base-button @click="toggleNewScheduleForm" title="Dodaj nowy adres">
-                <i class="fa-solid fa-plus"></i>
-            </base-button>
-        </div>
-        <doctor-schedule v-if="newScheduleFormVisible" newScheduleMode
-            @cancel="toggleNewScheduleForm"
-            @add="addSchedule"
-        >
-        </doctor-schedule>
+    <section class="address" v-if="pageLoaded">
+        <select v-model="selectedAddress" @change="changeAddress">
+            <option v-for="address in addresses" :key="address.id" :value="address.id">
+                {{ address.name }} - {{ address.postalCode }} {{ address.city }}, {{ address.streetType.shortName }} {{ address.streetName }} {{ address.houseNumber }}
+            </option>
+        </select>
     </section>
-    <div class="schedule-list" v-if="pageLoaded">
-        <doctor-schedule v-for="schedule in schedules" :key="schedule.id"
-            :id="schedule.id"
-            :dayOfWeek="schedule.dayOfWeek"
-            :endTime="schedule.endTime"
-            :startTime="schedule.startTime"
-            :appointmentDuration="schedule.appointmentDuration"
-            :validDateFrom="schedule.validDateFrom"
-            :validDateTo="schedule.validDateTo"
-            @update="updateSchedule"
-            @remove="removeSchedule"
-        >
-        </doctor-schedule>
-    </div>
+    <section>
+        <section class="new-schedule">
+            <div class="centered-button" v-if="!newScheduleFormVisible">
+                <base-button @click="toggleNewScheduleForm" title="Dodaj nowy adres">
+                    <i class="fa-solid fa-plus"></i>
+                </base-button>
+            </div>
+            <doctor-schedule v-if="newScheduleFormVisible" newScheduleMode
+                @cancel="toggleNewScheduleForm"
+                @add="addSchedule"
+            >
+            </doctor-schedule>
+        </section>
+        <section class="schedule-list" v-if="pageLoaded">
+            <doctor-schedule v-for="schedule in schedules" :key="schedule.id"
+                :id="schedule.id"
+                :dayOfWeek="schedule.dayOfWeek"
+                :endTime="schedule.endTime"
+                :startTime="schedule.startTime"
+                :appointmentDuration="schedule.appointmentDuration"
+                :validDateFrom="schedule.validDateFrom"
+                :validDateTo="schedule.validDateTo"
+                @update="updateSchedule"
+                @remove="removeSchedule"
+            >
+            </doctor-schedule>
+        </section>
+    </section>
 </template>
 
 <script>
@@ -40,21 +49,51 @@ export default {
     },
     data() {
         return {
+            addresses: [],
             schedules: [],
+
+            selectedAddress: null,
             newScheduleFormVisible: false,
 
             pageLoaded: false
         }
     },
     computed: {
-        facilityId() {
-            return this.$route.query.facilityId;
+        facility() {
+            return this.$store.getters['facilities/facility'];
         },
         authToken() {
             return this.$store.getters['auth/token'];
+        },
+        currentLoggedProfile() {
+            return this.$store.getters['auth/loggedProfile'];
         }
     },
     methods: {
+        async fetchAddresses() {
+            this.addresses = [];
+
+            this.$store.commit('setIsPageLoading', true, { root: true })
+
+            try {
+                if (this.facility === null) {
+                    await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.currentLoggedProfile.id });
+                }
+
+                const response = await axios.get(`${API_URL}/facilities/${this.facility.id}`, {
+                    headers: { Authorization: `Bearer ${this.authToken}` }
+                });
+                
+                for (var key in response.data.addresses)
+                {
+                    this.addresses.push(response.data.addresses[key]);
+                }
+                this.$store.commit('setIsPageLoading', false, { root: true });
+            }
+            catch (error) {
+                handleAPIErrorWithMessage(error);
+            } 
+        },
         async fetchSchedules() {
             this.schedules = [];
             
@@ -62,7 +101,7 @@ export default {
             try {
                 const response = await axios.get(`${API_URL}/schedules`, {
                     params: {
-                        facilityId: this.facilityId,
+                        addressId: this.selectedAddress,
                         doctorId: this.doctorId
                     },
                     headers: { Authorization: `Bearer ${this.authToken}` }
@@ -79,12 +118,15 @@ export default {
                 handleAPIErrorWithMessage(error);
             } 
         },
+        async changeAddress() {
+            await this.fetchSchedules();
+        },
         async addSchedule(schedule) {
             this.$store.commit('setIsPageLoading', true, { root: true })
             try {
                 await axios.post(`${API_URL}/schedules`, {
                     doctorId: this.doctorId,
-                    facilityId: this.facilityId,
+                    addressId: this.selectedAddress,
                     ...schedule
                 }, 
                 {
@@ -133,7 +175,9 @@ export default {
         }
     },
     async beforeMount() {
-        await this.fetchSchedules();
+        await this.fetchAddresses();
+        this.selectedAddress = this.addresses[0].id;
+        await this.changeAddress();
 
         this.pageLoaded = true;
     }
@@ -154,5 +198,41 @@ export default {
 .new-schedule button:hover {
     background-color: #768afd;
     border-color: #768afd;
+}
+
+.address {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+select {
+    border: none;
+    background-color: #fff;
+    border: 2px solid #5c6bc0;
+    border-radius: 30px;
+    padding: 6px 24px;
+    font-size: 1.2rem;
+    outline: none;
+    margin: 0 0.5rem;
+    min-width: 60%;
+} 
+
+select:focus {
+    border-color: #5162c2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+} 
+
+select option {
+  background-color: #f1f1f1;
+  color: #333;
+  font-size: 14px;
+  padding: 8px 24px;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.2s ease;
+}
+
+select option:hover {
+  background-color: #e5e5e5;
 }
 </style>

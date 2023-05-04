@@ -5,22 +5,25 @@
             <div>
                 <base-badge v-for="specialty in specialties" :key="specialty.name" :title="specialty.name" type="doctor-specialty"></base-badge>
             </div> 
-            <div class="actions">
-                <base-button>Sprawdź wolne terminy</base-button>
-            </div>
+            <doctor-booking :doctorId="id"></doctor-booking>
         </base-card>
     </li>
 </template>
 
 <script>
-    export default {
-        props: ['id', 'firstName', 'lastName', 'title', 'specialties'],
-        computed: {
-            fullName() {
-                return this.firstName + ' ' + this.lastName;
-            }
+import DoctorBooking from './DoctorBooking.vue';
+
+export default {
+    components: {
+        DoctorBooking
+    },
+    props: ['id', 'firstName', 'lastName', 'title', 'specialties'],
+    computed: {
+        fullName() {
+            return this.firstName + ' ' + this.lastName;
         }
-    }
+    },
+}
 </script>
 
 <style scoped>
@@ -35,11 +38,5 @@ div {
 
 .doctor-title {
     font-size: 1.2rem;
-}
-
-.actions {
-  display: flex;
-  margin-top: 1rem;
-  justify-content: flex-end;
 }
 </style>

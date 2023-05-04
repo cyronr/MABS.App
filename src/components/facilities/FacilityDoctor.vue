@@ -141,7 +141,7 @@ export default {
             return this.$store.getters['facilities/facility']
         },
         doctorDetailsLink() {
-            return  '/doctors/' + this.id + '?mode=facility' + '&facilityId=' + this.facility.id;
+            return  '/doctors/' + this.id + '?mode=facility';
         },
     },
     methods: {

@@ -6,3 +6,9 @@ export const ProfileType = Object.freeze({
     Patient: 2,
     Admin: 4
 });
+
+export const AppointmentStatus = Object.freeze({
+    Prepared: 1,
+    Confirmed: 2,
+    Cancelled: 3
+});

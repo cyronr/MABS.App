@@ -51,7 +51,9 @@ export default {
                     email: this.email,
                     password: this.password
                 });
-                
+                console.log(this.$store.getters['patients/patient']);
+                console.log(this.$store.getters['facilities/facility']);
+
                 this.$router.replace('/');
             } 
             catch (error) {

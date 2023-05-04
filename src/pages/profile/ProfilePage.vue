@@ -4,7 +4,7 @@
             <div class="menu">
               <profile-menu :profileId="id" @tabChanged="changeTab"></profile-menu>
             </div>
-            <div class="content" v-if="isPageReady">
+            <div class="content" v-if="pageLoaded">
               <header>
                 <base-card class="header" :style="contentHeaderStyle">
                   <h1> {{ title }} </h1>
@@ -28,7 +28,9 @@ export default {
   },
   data() {
     return {
-      activeTab: 'data'
+      activeTab: 'data',
+
+      pageLoaded: false
     }
   },
   computed: {
@@ -38,11 +40,11 @@ export default {
         isPatientProfile() {
             return this.$store.getters['auth/isPatientProfile'];
         },
-        isPageReady() {
-          if (this.isFacilityProfile)
-            return this.$store.getters['facilities/facility'] !== null;
-          else
-            return false;
+        patient() {
+            return this.$store.getters['patients/patient'];
+        },
+        facility() {
+            return this.$store.getters['facilities/facility'];
         },
         contentHeaderStyle() {
           return {
@@ -69,7 +71,20 @@ export default {
     }
   },
   async beforeMount() {
-    await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.id });
+    if (this.isFacilityProfile) {
+      if (this.facility === null) {
+        await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.id });
+      }
+
+      this.pageLoaded = true;
+    }
+    else if (this.isPatientProfile) {
+      if (this.patient === null) {
+        await this.$store.dispatch('patients/getPatientByProfile', { profileId: this.id });
+      }
+      
+      this.pageLoaded = true;
+    }
   }
 }
 </script>
