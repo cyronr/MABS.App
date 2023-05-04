@@ -1,19 +1,18 @@
 import { createStore } from "vuex";
 
- import doctorsModule from "./doctors";
- import facilitiesModule from "./facilities";
- import authModule from "./auth";
- import patientModule from "./patients";
-
-// import requestsModule from "./modules/requests";
-// import authModule from "./modules/auth";
+import doctorsModule from "./doctors";
+import facilitiesModule from "./facilities";
+import authModule from "./auth";
+import patientModule from "./patients";
+import appointmentsModule from "./appointments";
 
 const store = createStore({
     modules: {
         doctors: doctorsModule,
         facilities: facilitiesModule,
         auth: authModule,
-        patients: patientModule
+        patients: patientModule,
+        appointments: appointmentsModule
     },
     state() {
         return {

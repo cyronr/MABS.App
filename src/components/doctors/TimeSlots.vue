@@ -55,8 +55,15 @@ export default {
         selectDate(date) {
             this.selectedDate = date;
             this.timeSlotsForSelectedDate = this.timeSlots.filter(ts => ts.date === date);
+
+            this.selectedTimeSlot = null;
+            this.$emit('select', null);
         },
         selectTimeSlot(timeSlot) {
+            if (!timeSlot.available) {
+                return;
+            }
+
             this.selectedTimeSlot = timeSlot;
             this.$emit('select', timeSlot);
         }
@@ -125,6 +132,6 @@ export default {
 }
 
 .selected {
-    background-color: #1ac00b;
+    background-color: #10b801;
 }
 </style>

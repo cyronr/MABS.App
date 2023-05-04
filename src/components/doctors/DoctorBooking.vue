@@ -15,7 +15,7 @@
     </div>
     <div class="actions">
         <base-button v-if="showBookingsButtonVisible" @click="showBookings">Sprawdź wolne terminy</base-button>
-        <base-button v-if="bookAppointmentButtonVisible" @click="bookAppointment" class="book-appointment">Zarezerwuj wizytę</base-button>
+        <base-button v-if="bookAppointmentButtonVisible" @click="bookAppointment" class="book-appointment" :disabled="bookAppointmentButtonDisabled">Zarezerwuj wizytę</base-button>
         <base-button v-if="!showBookingsButtonVisible" @click="hideBookings">Ukryj terminy</base-button>
     </div>
     <div class="error" v-if="!!errorMsg">
@@ -51,22 +51,10 @@ export default {
             return this.timeSlots.length > 0;
         },
         bookAppointmentButtonVisible() {
-            if (this.selectedTimeSlot !== null) {
-                if (this.isLogged) {
-                    if (this.isFacilityProfile) {
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                }
-                else {
-                    return true;
-                }
-            }
-            else {
-                return false;
-            }
+            return !this.isFacilityProfile && this.bookingsVisible;
+        },
+        bookAppointmentButtonDisabled() {
+            return this.selectedTimeSlot === null;
         },
         isLogged() {
             return this.$store.getters['auth/isLogged'];
@@ -82,6 +70,9 @@ export default {
         }, 
         authToken() {
             return this.$store.getters['auth/token'];
+        },
+        apponitment() {
+            return this.$store.getters['appointments/appointment'];
         }
     },  
     methods: {
@@ -169,18 +160,14 @@ export default {
                     this.$store.commit('setIsPageLoading', true, { root: true });
                 }
 
-                const response = await axios.post(`${API_URL}/appointments`, {
+                await this.$store.dispatch('appointments/create', {
                     patientId: this.patient.id,
                     scheduleId: this.selectedTimeSlot.scheduleId,
                     date: this.selectedTimeSlot.date,
                     time: this.selectedTimeSlot.time
-                },
-                {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                
-                this.$store.commit('setIsPageLoading', false, { root: true });
-                this.$router.push(`/appointments/${response.data.id}`);
+                })
+
+                this.$router.push(`/appointments/${this.apponitment.id}`);
             }
             catch (error) {
                 handleAPIErrorWithMessage(error);
@@ -257,5 +244,17 @@ select option:hover {
 .book-appointment:hover {
     background-color: #1ac00b;
     border-color: #1ac00b;
+}
+
+button:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: default;
+}
+
+button:disabled:hover {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: default;
 }
 </style>

@@ -14,7 +14,9 @@
                 <li> <hr /> </li>
             </div>
             <div v-if="isPatientProfile">
-                <li :class="{active: activeTab === 'appointments'}" @click="changeTab('appointments')">Moje wizyty</li>
+                <li :class="{active: activeTab === 'appointments'}" @click="changeTab('appointments')">
+                    <router-link :to="appointmentsLink">Moje wizyty</router-link>
+                </li>
                 <li> <hr /> </li>
             </div>
             <div>
@@ -57,7 +59,10 @@ export default {
         },
         addressesLink() {
             return `/profile/${this.profileId}/addresses`;
-        },
+        }, 
+        appointmentsLink() {
+            return `/profile/${this.profileId}/appointments`;
+        }, 
         dataLink() {
             return `/profile/${this.profileId}`;
         }

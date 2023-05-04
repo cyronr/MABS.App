@@ -154,7 +154,7 @@ export default {
 
             this.$emit('confirm-appointment', {
                 appointmentId: this.appointment.id,
-                confimationCode: this.confirmationCode.value
+                confirmationCode: this.confirmationCode.value
             });
         }
     }

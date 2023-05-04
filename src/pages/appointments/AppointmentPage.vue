@@ -7,8 +7,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { API_URL, handleAPIErrorWithMessage } from '../../api';
 import SingleAppointment from '../../components/appointments/SingleAppointment.vue';
 
 export default {
@@ -18,72 +16,34 @@ export default {
     },  
     data() {
         return {
-            appointment: null,
-
             pageLoaded: false
         }
     },
     computed: {
-        authToken() {
-            return this.$store.getters['auth/token'];
+        appointment() {
+            return this.$store.getters['appointments/appointment'];
         }
     },
     methods: {
         async fetchAppointment() {
-            this.appointment = null;
-            this.$store.commit('setIsPageLoading', true, { root: true })
-
-            try {
-                const response = await axios.get(`${API_URL}/appointments/${this.id}`, {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-
-                this.appointment = response.data;
-
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                handleAPIErrorWithMessage(error);
-            } 
+            await this.$store.dispatch('appointments/getById', { id: this.id })
         },
         async cancel(appointmentId) {
-            this.$store.commit('setIsPageLoading', true, { root: true })
-            try {
-                const response = await axios.post(`${API_URL}/appointments/${appointmentId}/cancel`, {}, {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-
-                this.appointment = response.data;
-
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                handleAPIErrorWithMessage(error);
-            } 
+            await this.$store.dispatch('appointments/cancel', { 
+                id: appointmentId
+            });
         },
         async confirm(appointment) {
-            this.$store.commit('setIsPageLoading', true, { root: true });
-            try {
-                const response = await axios.post(`${API_URL}/appointments/${appointment.appointmentId}/confirm`, {
-                    params: {
-                        confirmationCode: appointment.cofirmationCode
-                    }
-                },   
-                {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-
-                this.appointment = response.data;
-
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                handleAPIErrorWithMessage(error);
-            }
+            await this.$store.dispatch('appointments/confirm', { 
+                id: appointment.appointmentId,
+                confirmationCode: appointment.confirmationCode
+            });
         }
     },
     async beforeMount() {
-        await this.fetchAppointment();
+        if (this.appointment === null) {
+            await this.fetchAppointment();
+        }
 
         this.pageLoaded = true;
     }

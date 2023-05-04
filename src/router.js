@@ -9,6 +9,7 @@ import ProfilePage from './pages/profile/ProfilePage.vue';
 import ProfileDataPage from './pages/profile/ProfileDataPage.vue';
 import ProfileDoctorsPage from './pages/profile/ProfileDoctorsPage.vue';
 import ProfileAddressesPage from './pages/profile/ProfileAddressesPage.vue';
+import ProfileAppointmentsPage from './pages/profile/ProfileAppointmentsPage.vue';
 import DoctorPage from './pages/doctors/DoctorPage.vue';
 import AppointmentPage from './pages/appointments/AppointmentPage.vue';
 import NotFound from './pages/NotFound.vue';
@@ -49,6 +50,11 @@ const router = createRouter({
                 { 
                     path: 'addresses', 
                     component: ProfileAddressesPage,
+                    meta: { requiresAuth: true } 
+                },
+                { 
+                    path: 'appointments', 
+                    component: ProfileAppointmentsPage,
                     meta: { requiresAuth: true } 
                 }
             ]

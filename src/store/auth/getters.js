@@ -8,10 +8,20 @@ export default {
         return state.loggedProfile;
     },
     isFacilityProfile(state) {
-        return state.loggedProfile.profileType === ProfileType.Facility;
+        if (state.loggedProfile) {
+            return state.loggedProfile.profileType === ProfileType.Facility;
+        }
+        else {
+            return false;
+        }
     },
     isPatientProfile(state) {
-        return state.loggedProfile.profileType === ProfileType.Patient;
+        if (state.loggedProfile) {
+            return state.loggedProfile.profileType === ProfileType.Patient;
+        }
+        else {
+            return false;
+        }
     },
     token(state) {
         return state.token;
