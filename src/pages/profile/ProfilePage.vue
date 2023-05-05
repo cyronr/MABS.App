@@ -4,7 +4,7 @@
             <div class="menu">
               <profile-menu :profileId="id" @tabChanged="changeTab"></profile-menu>
             </div>
-            <div class="content" v-if="pageLoaded">
+            <div class="content">
               <header>
                 <base-card class="header" :style="contentHeaderStyle">
                   <h1> {{ title }} </h1>
@@ -28,24 +28,10 @@ export default {
   },
   data() {
     return {
-      activeTab: 'data',
-
-      pageLoaded: false
+      activeTab: 'data'
     }
   },
   computed: {
-        isFacilityProfile() {
-            return this.$store.getters['auth/isFacilityProfile'];
-        },
-        isPatientProfile() {
-            return this.$store.getters['auth/isPatientProfile'];
-        },
-        patient() {
-            return this.$store.getters['patients/patient'];
-        },
-        facility() {
-            return this.$store.getters['facilities/facility'];
-        },
         contentHeaderStyle() {
           return {
             backgroundColor: '#c1caff',
@@ -68,22 +54,6 @@ export default {
   methods: {
     changeTab(tab) {
       this.activeTab = tab;
-    }
-  },
-  async beforeMount() {
-    if (this.isFacilityProfile) {
-      if (this.facility === null) {
-        await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.id });
-      }
-
-      this.pageLoaded = true;
-    }
-    else if (this.isPatientProfile) {
-      if (this.patient === null) {
-        await this.$store.dispatch('patients/getPatientByProfile', { profileId: this.id });
-      }
-      
-      this.pageLoaded = true;
     }
   }
 }

@@ -32,14 +32,63 @@ export default {
             });
             
             context.commit('setAppointments', response.data);
+            context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']))
             context.commit('setIsPageLoading', false, { root: true })
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
         }       
     },
-    async create(context, payload) {
+    async getByAddress(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
+
+        try {
+            const token = (context.rootGetters['auth/token']);
+            const response = await axios.get(`${API_URL}/appointments/address/${payload.id}`, {
+                params: {
+                    PageNumber: payload.pageNumber,
+                    PageSize: payload.pageSize
+                },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+
+            context.commit('setAppointments', response.data);
+            context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
+
+            context.commit('setIsPageLoading', false, { root: true });
+        }
+        catch (error) {
+            handleAPIErrorWithMessage(error);
+        }       
+    },
+    async getByDoctor(context, payload) {
+        context.commit('setIsPageLoading', true, { root: true });
+
+        try {
+            const token = (context.rootGetters['auth/token']);
+            const response = await axios.get(`${API_URL}/appointments/doctor/${payload.id}`, {
+                params: {
+                    PageNumber: payload.pageNumber,
+                    PageSize: payload.pageSize
+                },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            context.commit('setAppointments', response.data);
+            context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
+
+            context.commit('setIsPageLoading', false, { root: true });
+        }
+        catch (error) {
+            handleAPIErrorWithMessage(error);
+        }       
+    },
+    async clearAppointments(context) {
+        context.commit('setAppointments', []);
+    },
+    async create(context, payload) {
+        context.commit('setIsPageLoading', true, { root: true });
 
         try {
             const token = (context.rootGetters['auth/token']);

@@ -34,8 +34,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { API_URL, handleAPIError, API_BUSINESS_ERROR_CODES } from '../../api';
 import FacilityAddress from '../../components/facilities/FacilityAddress.vue';
 
 export default {
@@ -44,8 +42,6 @@ export default {
     },
     data() {
         return {
-            addresses: [],
-
             error: null,
             
             newAddressFormVisible: false,
@@ -56,6 +52,9 @@ export default {
         facility() {
             return this.$store.getters['facilities/facility'];
         },
+        addresses() {
+            return this.$store.getters['facilities/addresses'];
+        },
         showNewAddressButton() {
             return !this.newAddressFormVisible;
         },
@@ -65,21 +64,7 @@ export default {
     },
     methods: {
         async fetchAddresses() {
-            this.addresses = [];
-
-            this.$store.commit('setIsPageLoading', true, { root: true })
-
-            try {
-                const response = await axios.get(`${API_URL}/facilities/${this.facility.id}`, {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                
-                this.parseResponse(response);
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                handleAPIError(error);
-            } 
+            this.$store.dispatch('facilities/getAddresses');
         },
         async fetchAddressStreetTypes() {
             await this.$store.dispatch('facilities/getStreetTypes');
@@ -93,99 +78,14 @@ export default {
                 return;
             }
 
-            this.$store.commit('setIsPageLoading', true, { root: true })
-
-            try {
-                const response = await axios.delete(`${API_URL}/facilities/${this.facility.id}/addresses/${addressId}`, {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                
-                this.parseResponse(response);
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                handleAPIError(error);
-            } 
+            await this.$store.dispatch('facilities/deleteAddress', { addressId: addressId });
         },
         async addAddress(address) {
-            this.$store.commit('setIsPageLoading', true, { root: true })
-            try {
-                const response = await axios.post(`${API_URL}/facilities/${this.facility.id}/addresses`, address, {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                
-                this.parseResponse(response);
-
-                this.$store.commit('setIsPageLoading', false, { root: true });
-                this.toggleNewAddressForm();
-            }
-            catch (error) {
-                this.error = {
-                    msg: 'Nieoczekiwany błąd aplikacji.'
-                };
-
-                if (API_BUSINESS_ERROR_CODES.includes(error.response.status)) {
-                    const responseErrors = error.response.data.errors;
-                    
-                    let errors = '';
-                    for(const key in responseErrors) {
-                        errors += responseErrors[key] + '\n';
-                    }
-
-                    if (errors === '') {
-                        errors = "Nieoczekiwany błąd aplikacji";
-                    }
-
-                    this.error = {
-                        msg: errors
-                    };
-                }
-
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            } 
+            await this.$store.dispatch('facilities/addAddress', address);
+            this.newAddressFormVisible = false;
         },
         async updateAddress(address) {
-            this.$store.commit('setIsPageLoading', true, { root: true })
-
-            try {
-                const response = await axios.put(`${API_URL}/facilities/${this.facility.id}/addresses`, address, {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                this.parseResponse(response);
-
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                this.error = {
-                    msg: 'Nieoczekiwany błąd aplikacji.'
-                };
-
-                if (API_BUSINESS_ERROR_CODES.includes(error.response.status)) {
-                    const responseErrors = error.response.data.errors;
-                    
-                    let errors = '';
-                    for(const key in responseErrors) {
-                        errors += responseErrors[key] + '\n';
-                    }
-
-                    if (errors === '') {
-                        errors = "Nieoczekiwany błąd aplikacji";
-                    }
-
-                    this.error = {
-                        msg: errors
-                    };
-                }
-
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            } 
-        },
-        parseResponse(response) {
-            this.addresses = [];
-            for (var key in response.data.addresses)
-            {
-                this.addresses.push(response.data.addresses[key]);
-            }
+            await this.$store.dispatch('facilities/updateAddress', address);
         },
         toggleNewAddressForm() {
             this.newAddressFormVisible = !this.newAddressFormVisible;
@@ -223,5 +123,6 @@ ul {
 .new-address button:hover {
     background-color: #768afd;
     border-color: #768afd;
+    box-shadow: 0 0 10px rgba(118, 138, 253, 0.35);
 }
 </style>

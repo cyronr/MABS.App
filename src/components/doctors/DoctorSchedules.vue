@@ -1,5 +1,7 @@
 <template>
-    <base-card>Harmonogram</base-card>
+    <base-card>
+        <h2>Harmonogram pracy</h2>
+    </base-card>
     <section class="address" v-if="pageLoaded">
         <select v-model="selectedAddress" @change="changeAddress">
             <option v-for="address in addresses" :key="address.id" :value="address.id">
@@ -76,10 +78,6 @@ export default {
             this.$store.commit('setIsPageLoading', true, { root: true })
 
             try {
-                if (this.facility === null) {
-                    await this.$store.dispatch('facilities/getFacilityByProfile', { profileId: this.currentLoggedProfile.id });
-                }
-
                 const response = await axios.get(`${API_URL}/facilities/${this.facility.id}`, {
                     headers: { Authorization: `Bearer ${this.authToken}` }
                 });
@@ -185,6 +183,11 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
 .centered-button {
     display: flex;
     justify-content: center;
@@ -198,6 +201,7 @@ export default {
 .new-schedule button:hover {
     background-color: #768afd;
     border-color: #768afd;
+    box-shadow: 0 0 10px rgba(118, 138, 253, 0.35);
 }
 
 .address {

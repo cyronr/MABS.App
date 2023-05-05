@@ -12,6 +12,7 @@ import ProfileAddressesPage from './pages/profile/ProfileAddressesPage.vue';
 import ProfileAppointmentsPage from './pages/profile/ProfileAppointmentsPage.vue';
 import DoctorPage from './pages/doctors/DoctorPage.vue';
 import AppointmentPage from './pages/appointments/AppointmentPage.vue';
+import AppointmentsPage from './pages/appointments/AppointmentsPage.vue';
 import NotFound from './pages/NotFound.vue';
 
 const router = createRouter({
@@ -68,6 +69,12 @@ const router = createRouter({
         { 
             path: '/appointments/:id', 
             component: AppointmentPage,
+            props: true,
+            meta: { requiresAuth: true }
+        },
+        { 
+            path: '/appointments', 
+            component: AppointmentsPage,
             props: true,
             meta: { requiresAuth: true }
         },

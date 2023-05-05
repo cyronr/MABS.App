@@ -37,8 +37,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { API_URL, handleAPIError } from '../../api';
 import FacilityDoctor from '../../components/facilities/FacilityDoctor.vue';
 
 export default {
@@ -47,9 +45,6 @@ export default {
     },
     data() {
         return {
-            doctors: [],
-            paginationParams: null,
-
             newDoctorFormVisible: false,
             pageLoaded: false
         }
@@ -57,6 +52,12 @@ export default {
     computed: {
         facility() {
             return this.$store.getters['facilities/facility'];
+        },
+        doctors() {
+            return this.$store.getters['facilities/doctors'];
+        },
+        paginationParams() {
+            return this.$store.getters['facilities/paginationParams'];
         },
         authToken() {
             return this.$store.getters['auth/token'];
@@ -81,25 +82,10 @@ export default {
     },
     methods: {
         async fetchDoctors(pageNumber = 1, pageSize = 5) {
-            this.$store.commit('setIsPageLoading', true, { root: true })
-
-            try {
-                const response = await axios.get(`${API_URL}/facilities/${this.facility.id}/doctors`, {
-                    params: {
-                        PageNumber: pageNumber,
-                        PageSize: pageSize
-                    }
-                },
-                {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                
-                this.parseResponse(response);
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                handleAPIError(error);
-            } 
+            await this.$store.dispatch('facilities/getDoctors', {
+                pageNumber: pageNumber,
+                pageSize: pageSize
+            });
         },
         async fetchDoctorTitles() {
             await this.$store.dispatch('doctors/getTitles');
@@ -108,60 +94,26 @@ export default {
             await this.$store.dispatch('doctors/getSpecialties');
         },
         async removeDoctor(doctorId) {
-            this.$store.commit('setIsPageLoading', true, { root: true })
-
-            try {
-                const response = await axios.delete(`${API_URL}/facilities/${this.facility.id}/doctors/${doctorId}`, {
-                    params: {
-                        PageNumber: 1,
-                        PageSize: 5
-                    }
-                },
-                {
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                
-                this.parseResponse(response);
-                this.$store.commit('setIsPageLoading', false, { root: true });
-            }
-            catch (error) {
-                handleAPIError(error);
-            } 
+            await this.$store.dispatch('facilities/deleteDoctor', {
+                doctorId: doctorId,
+                pageNumber: 1,
+                pageSize: 5
+            });
         },
         async addDoctor(doctorId) {
-            this.$store.commit('setIsPageLoading', true, { root: true })
-            try {
-                const response = await axios.post(`${API_URL}/facilities/${this.facility.id}/doctors/${doctorId}`, null, {
-                    params: {
-                        PageNumber: 1,
-                        PageSize: 5
-                    },
-                    headers: { Authorization: `Bearer ${this.authToken}` }
-                });
-                
-                this.parseResponse(response);
-                this.$store.commit('setIsPageLoading', false, { root: true });
-
-                this.toggleNewDoctorForm();
-            }
-            catch (error) {
-                handleAPIError(error);
-            } 
-        },
-        parseResponse(response) {
-            this.doctors = [];
-            for (var key in response.data)
-            {
-                this.doctors.push(response.data[key])
-            }
-
-            this.paginationParams = JSON.parse(response.headers['x-pagination']);
+            await this.$store.dispatch('facilities/addDoctor', {
+                doctorId: doctorId,
+                pageNumber: 1,
+                pageSize: 5
+            });
+            this.newDoctorFormVisible = false;
         },
         toggleNewDoctorForm() {
             this.newDoctorFormVisible = !this.newDoctorFormVisible;
         },
         changePage(page) {
             this.fetchDoctors(page, this.paginationParams.PageSize);
+            window.scrollTo(0, 0);
         },
     },
     async beforeMount() {
@@ -181,8 +133,6 @@ ul {
     padding: 0;
 }
 
-
-
 .centered-button {
     display: flex;
     justify-content: center;
@@ -196,5 +146,6 @@ ul {
 .new-doctor button:hover {
     background-color: #768afd;
     border-color: #768afd;
+    box-shadow: 0 0 10px rgba(118, 138, 253, 0.35);
 }
 </style>

@@ -21,7 +21,7 @@
             <section class="actions">
                 <base-button v-if="!editMode" @click="edit">Edytuj</base-button>
                 <base-button v-if="editMode" @click="save">Zapisz</base-button>
-                <base-button v-if="editMode" @click="cancel" class="action-red">Anuluj</base-button>
+                <base-button v-if="editMode" @click="cancel" mode="negative">Anuluj</base-button>
             </section>
         </form>
     </base-card>
@@ -228,16 +228,5 @@ button {
 
 .actions button {
     padding: 0.8rem 3rem;
-}
-
-.action-red {
-    background-color: #f75f5f;
-    border: 1px solid #f75f5f;
-}
-
-.action-red:hover,
-.action-red:active {
-  background-color: #dd5555;
-  border-color: #dd5555;
 }
 </style>

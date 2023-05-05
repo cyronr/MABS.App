@@ -13,5 +13,5 @@ export default {
     },
     setPaginationParams(state, payload) {
         state.paginationParams = payload;
-    },
+    }
 };

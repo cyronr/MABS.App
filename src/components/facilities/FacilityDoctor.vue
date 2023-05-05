@@ -34,11 +34,11 @@
                     <p class="error" v-html="error.replace('\n', '<br/>')"></p>
                 </section>
                 <section class="actions">
-                    <base-button v-if="!editMode" link :to="doctorDetailsLink">Pokaż szczegóły pracy</base-button>
+                    <base-button v-if="!editMode" link :to="doctorDetailsLink">Pokaż harmonogram</base-button>
                     <base-button v-if="!editMode" @click="edit">Edytuj dane</base-button>
-                    <base-button v-if="!editMode" @click="remove" class="action-red">Usuń</base-button>
+                    <base-button v-if="!editMode" @click="remove" mode="negative">Usuń</base-button>
                     <base-button v-if="editMode" @click="save">Zapisz</base-button>
-                    <base-button v-if="editMode" @click="cancel" class="action-red">Anuluj</base-button>
+                    <base-button v-if="editMode" @click="cancel" mode="negative">Anuluj</base-button>
                 </section>
             </form>
         </base-card>
@@ -473,18 +473,8 @@ p.error {
     margin-top: 3rem;
 }
 
-.actions button {
+.actions button,
+.actions a  {
     padding: 0.8rem 3rem;
-}
-
-.action-red {
-    background-color: #f75f5f;
-    border: 1px solid #f75f5f;
-}
-
-.action-red:hover,
-.action-red:active {
-  background-color: #dd5555;
-  border-color: #dd5555;
 }
 </style>

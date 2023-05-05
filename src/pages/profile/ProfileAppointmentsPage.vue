@@ -8,6 +8,16 @@
             >
             </single-appointment>
         </div>
+        <div v-if="showPagination" class="pagination">
+            <base-pagination
+                :currentPage="paginationParams.CurrentPage"
+                :totalPages="paginationParams.TotalPages"
+                :pageSize="paginationParams.PageSize"
+                :totalCount="paginationParams.TotalCount"
+                @page-changed="changePage"
+            >
+            </base-pagination>
+        </div>
     </div>
 </template>
 
@@ -29,7 +39,13 @@ export default {
         },
         appointments() {
             return this.$store.getters['appointments/appointments'];
-        }
+        },
+        paginationParams() {
+            return this.$store.getters['appointments/paginationParams'];
+        },
+        showPagination() {
+            return this.appointments.length > 0;
+        },
     },
     methods: {
         async fetchAppointments(pageNumer = 1, pageSize = 5) {
@@ -51,7 +67,10 @@ export default {
                 confirmationCode: appointment.confirmationCode
             });
             await this.fetchAppointments();
-        }
+        },
+        async changePage(page) {
+            await this.fetchAppointments(page, this.paginationParams.PageSize);
+        },
     },
     async beforeMount() {
         await this.fetchAppointments();
@@ -60,6 +79,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-</style>

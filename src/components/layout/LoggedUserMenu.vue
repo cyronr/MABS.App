@@ -4,11 +4,13 @@
             {{ currentLoggedProfile.email }} <i class="fa-solid fa-caret-down"></i>
         </base-button> 
         <ul class="dropdown-menu" v-show="isDropdownOpen">
-            <!-- <div v-if="isFacilityProfile">
-                <li class="dropdown-item">Moi lekarze</li>
+            <div v-if="isFacilityProfile">
+                <li class="dropdown-item">
+                    <router-link :to="appoinmentsLink">Wizyty</router-link>
+                </li>
                 <li class="dropdown-item"> <hr /> </li>
             </div>
-            <div v-if="isFacilityProfile">
+           <!--  <div v-if="isFacilityProfile">
                 <li class="dropdown-item">Moje adresy</li>
                 <li class="dropdown-item"> <hr /> </li>
             </div>
@@ -46,6 +48,9 @@ export default {
         },
         myProfileLink() {
             return `/profile/${this.currentLoggedProfile.id}`;
+        },
+        appoinmentsLink() {
+            return '/appointments';
         }
     },
     methods: {
@@ -75,7 +80,6 @@ export default {
 </script>
   
 <style scoped>
-@import '~@fortawesome/fontawesome-free/css/all.min.css';
 .dropdown {
   position: relative;
 }

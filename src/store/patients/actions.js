@@ -2,12 +2,14 @@ import axios from 'axios';
 import { API_URL, handleAPIError, handleAPIErrorWithMessage } from '../../api';
 
 export default {
-    async getPatientByProfile(context, payload) {
+    async getPatientByProfile(context) {
         context.commit('setIsPageLoading', true, { root: true })
 
         try {
             const token = (context.rootGetters['auth/token']);
-            const response = await axios.get(`${API_URL}/patients/byProfile/${payload.profileId}`, {
+            const profile = context.rootGetters['auth/loggedProfile'];
+            
+            const response = await axios.get(`${API_URL}/patients/byProfile/${profile.id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

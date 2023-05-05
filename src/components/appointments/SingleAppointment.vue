@@ -34,7 +34,7 @@
         </div>
         <div v-if="actionsVisible" class="appointment-section actions">
             <base-button v-if="confirmVisible" @click="confirmAppointment">Potwierdź</base-button>
-            <base-button v-if="cancelVisible" class="action-red" @click="cancelAppointment">Odwołaj</base-button>
+            <base-button v-if="cancelVisible" mode="negative" @click="cancelAppointment">Odwołaj</base-button>
         </div>
     </base-card>
     <confirm-dialog :show="cancelDialogVisible" title="Odwołaj wizytę" @confirmClick='cancelAppointmentConfirm' @cancelClick='cancelAppointmentCancel'>
@@ -218,17 +218,6 @@ export default {
 
 .actions button {
     padding: 0.8rem 3rem;
-}
-
-.action-red {
-    background-color: #f75f5f;
-    border: 1px solid #f75f5f;
-}
-
-.action-red:hover,
-.action-red:active {
-  background-color: #dd5555;
-  border-color: #dd5555;
 }
 
 .confirmation-code {

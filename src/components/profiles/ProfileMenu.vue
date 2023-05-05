@@ -8,20 +8,20 @@
                 <li> <hr /> </li>
             </div>
             <div v-if="isFacilityProfile">
-                <li :class="{active: activeTab === 'addresses'}" @click="changeTab('addresses')">
-                    <router-link :to="addressesLink">Moje adresy</router-link>
+                <li :class="{active: activeTab === 'addresses'}">
+                    <router-link :to="addressesLink" @click="changeTab('addresses')">Moje adresy</router-link>
                 </li>
                 <li> <hr /> </li>
             </div>
             <div v-if="isPatientProfile">
-                <li :class="{active: activeTab === 'appointments'}" @click="changeTab('appointments')">
-                    <router-link :to="appointmentsLink">Moje wizyty</router-link>
+                <li :class="{active: activeTab === 'appointments'}">
+                    <router-link :to="appointmentsLink" @click="changeTab('appointments')">Moje wizyty</router-link>
                 </li>
                 <li> <hr /> </li>
             </div>
             <div>
-                <li :class="{active: activeTab == 'data'}" @click="changeTab('data')">
-                    <router-link :to="dataLink">Moje dane</router-link>
+                <li :class="{active: activeTab == 'data'}">
+                    <router-link :to="dataLink" @click="changeTab('data')">Moje dane</router-link>
                 </li>
                 <li> <hr /> </li>
             </div>

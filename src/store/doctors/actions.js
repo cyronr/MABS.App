@@ -3,7 +3,7 @@ import { API_URL, handleAPIError } from '../../api';
 
 export default {
     async searchDoctors(context, payload) {
-        context.commit('setIsPageLoading', true, { root: true })
+        context.commit('setIsPageLoading', true, { root: true });
         context.commit('setDoctors', []);
 
         try {
@@ -17,9 +17,9 @@ export default {
                 }
             });
 
-            context.commit('setDoctors', response.data)
-            context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']))
-            context.commit('setIsPageLoading', false, { root: true })
+            context.commit('setDoctors', response.data);
+            context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
+            context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIError();

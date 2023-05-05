@@ -7,7 +7,10 @@ export default {
     state() {
         return {
             facility: null,
-            streetTypes: []
+            addresses: [],
+            doctors: [],
+            streetTypes: [],
+            paginationParams: []
         }
     },
     mutations,

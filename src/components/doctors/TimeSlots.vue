@@ -112,26 +112,32 @@ export default {
   display: inline-block;
   margin: 0.2rem;
   font-size: 0.9rem;
-  background-color: #5cd851;
+  background-color: #bafcb4;
+  border: solid 2px #10b801;
   cursor: pointer;
-  color: #ffffff;
+  color: #000;
 }
 
 .option:hover {
     background-color: #30d121;
+    box-shadow: 0 8px 16px rgba(16, 194, 0, 0.5);
 }
 
 .unavailable {
     background-color: #ccc;
+    border-color: #a8a8a8;
     cursor: default;
 }
 
 .unavailable:hover {
     background-color: #ccc;
     cursor: default;
+    box-shadow: none;
 }
 
 .selected {
-    background-color: #10b801;
+    background-color: #6dc765;
+    border-color: #10b801;
+    color: #000;
 }
 </style>
