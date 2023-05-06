@@ -25,7 +25,7 @@
                 </li>
                 <li> <hr /> </li>
             </div>
-            <li class="delete-profile">Usuń konto</li>
+            <li class="delete-profile" @click="deleteProfile">Usuń konto</li>
         </ul>
     </base-card>
 </template>
@@ -71,6 +71,10 @@ export default {
         changeTab(tab) {
             this.activeTab = tab;
             this.$emit('tabChanged', tab);
+        },
+        async deleteProfile() {
+            await this.$store.dispatch('profile/deleteProfile');
+            await this.$store.dispatch('auth/logout');
         }
     }
 }

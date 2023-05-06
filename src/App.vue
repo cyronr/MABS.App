@@ -32,9 +32,9 @@ export default {
         else if (this.isPatientProfile) {
           await this.$store.dispatch('patients/getPatientByProfile');
         }
-        else {
-          throw new Error("Nieznany profil.");
-        }
+        // else {
+        //   throw new Error("Nieznany profil.");
+        // }
 
         this.pageLoaded = true;
       }

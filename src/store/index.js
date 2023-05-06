@@ -5,6 +5,7 @@ import facilitiesModule from "./facilities";
 import authModule from "./auth";
 import patientModule from "./patients";
 import appointmentsModule from "./appointments";
+import profileModule from "./profile";
 
 const store = createStore({
     modules: {
@@ -12,7 +13,8 @@ const store = createStore({
         facilities: facilitiesModule,
         auth: authModule,
         patients: patientModule,
-        appointments: appointmentsModule
+        appointments: appointmentsModule,
+        profile: profileModule
     },
     state() {
         return {

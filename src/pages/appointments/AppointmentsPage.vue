@@ -97,7 +97,10 @@ export default {
         async fetchAppointments(pageNumer = 1, pageSize = 5) {
             await this.$store.dispatch('appointments/clearAppointments');
 
-            if (this.selectedAddress !== null) {
+            if (this.selectedAddress !== null && this.selectedDoctor !== null) {
+                await this.fetchAppointmentsByDoctorAndAddress(pageNumer, pageSize);
+            }
+            else if (this.selectedAddress !== null) {
                 await this.fetchAppointmentsByAddress(pageNumer, pageSize);
             }
             else if (this.selectedDoctor !== null) {
@@ -114,6 +117,14 @@ export default {
         async fetchAppointmentsByAddress(pageNumer = 1, pageSize = 5) {
             await this.$store.dispatch('appointments/getByAddress', { 
                 id: this.selectedAddress.id,
+                pageNumber: pageNumer,
+                pageSize: pageSize
+            });
+        },
+        async fetchAppointmentsByDoctorAndAddress(pageNumer = 1, pageSize = 5) {
+            await this.$store.dispatch('appointments/getByDoctorAndAddress', { 
+                doctorId: this.selectedDoctor.id,
+                addressId: this.selectedAddress.id,
                 pageNumber: pageNumer,
                 pageSize: pageSize
             });
