@@ -1,8 +1,8 @@
 <template>
-    <router-view v-if="pageLoaded"></router-view>
-    <base-dialog :show="isError" title="Błąd :(" error @close="closeErrorDlg">
-        <p> Wystąpił błąd podczas ładowania strony. </p>
-    </base-dialog>
+  <router-view v-if="pageLoaded"></router-view>
+  <base-dialog :show="isError" title="Błąd :(" error @close="closeErrorDlg">
+    <p> Wystąpił błąd podczas ładowania strony. </p>
+  </base-dialog>
 </template>
 
 <script>
@@ -15,10 +15,10 @@ export default {
   },
   computed: {
     isFacilityProfile() {
-        return this.$store.getters['auth/isFacilityProfile'];
+      return this.$store.getters['auth/isFacilityProfile'];
     },
     isPatientProfile() {
-        return this.$store.getters['auth/isPatientProfile'];
+      return this.$store.getters['auth/isPatientProfile'];
     },
   },
   methods: {
@@ -30,7 +30,7 @@ export default {
           await this.$store.dispatch('facilities/getFacility');
         }
         else if (this.isPatientProfile) {
-          await this.$store.dispatch('patients/getPatientByProfile');
+          await this.$store.dispatch('patients/getPatient');
         }
         // else {
         //   throw new Error("Nieznany profil.");
@@ -49,7 +49,7 @@ export default {
     }
   },
   async created() {
-      await this.tryLoadPage();
+    await this.tryLoadPage();
   }
 }
 </script>

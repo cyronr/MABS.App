@@ -3,7 +3,7 @@ import { API_URL, handleAPIError, handleAPIErrorWithMessage } from '../../api';
 
 export default {
     async getFacility(context) {
-        context.commit('setIsPageLoading', true, { root: true })
+        context.commit('setIsPageLoading', true, { root: true });
 
         try {
             const token = context.rootGetters['auth/token'];
@@ -18,7 +18,7 @@ export default {
         }
         catch (error) {
             handleAPIError(error);
-        }        
+        }
     },
     async getAddresses(context) {
         const facility = context.getters['facility'];
@@ -37,17 +37,17 @@ export default {
                     PageSize: payload.pageSize
                 }
             },
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
             context.commit('setDoctors', response.data);
             context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
             context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        } 
+        }
     },
     async getStreetTypes(context) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -60,7 +60,7 @@ export default {
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }        
+        }
     },
     async updateFacility(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -73,9 +73,9 @@ export default {
                 name: payload.name,
                 taxIdentificationNumber: payload.taxIdentificationNumber
             },
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
 
             context.commit('setFacility', response.data);
             context.commit('setIsPageLoading', false, { root: true });
@@ -83,7 +83,7 @@ export default {
         catch (error) {
             context.commit('setIsPageLoading', false, { root: true });
             handleAPIError(error);
-        }  
+        }
     },
     async addAddress(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -95,13 +95,13 @@ export default {
             const response = await axios.post(`${API_URL}/facilities/${facility.id}/addresses`, payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setAddresses', response.data.addresses);
             context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        } 
+        }
     },
     async updateAddress(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -113,13 +113,13 @@ export default {
             const response = await axios.put(`${API_URL}/facilities/${facility.id}/addresses`, payload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setAddresses', response.data.addresses);
             context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        } 
+        }
     },
     async deleteAddress(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -131,13 +131,13 @@ export default {
             const response = await axios.delete(`${API_URL}/facilities/${facility.id}/addresses/${payload.addressId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setAddresses', response.data.addresses);
             context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        } 
+        }
     },
     async addDoctor(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -151,16 +151,19 @@ export default {
                     PageNumber: payload.pageNumber,
                     PageSize: payload.pageSize
                 },
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
-            
+
             context.commit('setDoctors', response.data);
             context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
             context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        } 
+        }
     },
     async deleteDoctor(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -176,13 +179,13 @@ export default {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setDoctors', response.data);
             context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
             context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        } 
+        }
     }
 };

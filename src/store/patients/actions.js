@@ -2,13 +2,13 @@ import axios from 'axios';
 import { API_URL, handleAPIError, handleAPIErrorWithMessage } from '../../api';
 
 export default {
-    async getPatientByProfile(context) {
+    async getPatient(context) {
         context.commit('setIsPageLoading', true, { root: true })
 
         try {
             const token = (context.rootGetters['auth/token']);
             const profile = context.rootGetters['auth/loggedProfile'];
-            
+
             const response = await axios.get(`${API_URL}/patients/byProfile/${profile.id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -18,7 +18,7 @@ export default {
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }        
+        }
     },
     async updatePatient(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -30,9 +30,9 @@ export default {
                 firstname: payload.firstName,
                 lastname: payload.lastName
             },
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
 
             context.commit('setPatient', response.data);
             context.commit('setIsPageLoading', false, { root: true });
@@ -40,6 +40,6 @@ export default {
         catch (error) {
             context.commit('setIsPageLoading', false, { root: true });
             handleAPIError(error);
-        }  
+        }
     }
 };

@@ -11,7 +11,7 @@ export default {
                 email: payload.email,
                 password: payload.password
             });
-            
+
             context.dispatch('authenticate', response);
             context.commit('setIsPageLoading', false, { root: true })
         }
@@ -31,7 +31,7 @@ export default {
                 firstname: payload.firstName,
                 lastname: payload.lastName
             });
-            
+
             context.dispatch('authenticate', response);
             context.commit('setIsPageLoading', false, { root: true })
         }
@@ -64,7 +64,7 @@ export default {
                     }
                 }
             });
-            
+
             context.dispatch('authenticate', response);
             context.commit('setIsPageLoading', false, { root: true })
         }
@@ -83,10 +83,10 @@ export default {
         context.commit('setloggedProfile', profile);
 
         if (profile.profileType === ProfileType.Patient) {
-            context.dispatch('patients/getPatientByProfile', { profileId: profile.id }, { root: true })
+            context.dispatch('patients/getPatient', { profileId: profile.id }, { root: true })
         }
         else if (profile.profileType === ProfileType.Facility) {
-            context.dispatch('facilities/getFacilityByProfile', { profileId: profile.id }, { root: true })
+            context.dispatch('facilities/getFacility', { profileId: profile.id }, { root: true })
         }
     },
     logout(context) {

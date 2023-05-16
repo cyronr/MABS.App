@@ -10,13 +10,13 @@ export default {
             const response = await axios.get(`${API_URL}/appointments/${payload.id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setAppointment', response.data);
             context.commit('setIsPageLoading', false, { root: true })
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }       
+        }
     },
     async getByPatient(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -30,14 +30,14 @@ export default {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setAppointments', response.data);
             context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']))
             context.commit('setIsPageLoading', false, { root: true })
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }       
+        }
     },
     async getByAddress(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -60,7 +60,7 @@ export default {
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }       
+        }
     },
     async getByDoctor(context, payload) {
         context.commit('setIsPageLoading', true, { root: true });
@@ -74,7 +74,7 @@ export default {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setAppointments', response.data);
             context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
 
@@ -82,7 +82,7 @@ export default {
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }       
+        }
     },
     async getByDoctorAndAddress(context, payload) {
         context.commit('setIsPageLoading', true, { root: true });
@@ -96,7 +96,7 @@ export default {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            
+
             context.commit('setAppointments', response.data);
             context.commit('setPaginationParams', JSON.parse(response.headers['x-pagination']));
 
@@ -104,7 +104,7 @@ export default {
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }       
+        }
     },
     async clearAppointments(context) {
         context.commit('setAppointments', []);
@@ -120,28 +120,27 @@ export default {
                 date: payload.date,
                 time: payload.time
             },
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
 
             context.commit('setAppointment', response.data);
             context.commit('setIsPageLoading', false, { root: true });
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }  
+        }
     },
     async confirm(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
         try {
             const token = (context.rootGetters['auth/token']);
-            const response = await axios.post(`${API_URL}/appointments/${payload.id}/confirm`, {
-                params: {
-                    confirmationCode: payload.cofirmationCode
-                }
-            },   
-            {
-                headers: { Authorization: `Bearer ${token}` }
+            const response = await axios.post(`${API_URL}/appointments/${payload.id}/confirm`, null, {
+                params: { confirmationCode: payload.confirmationCode },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
             });
 
             context.commit('setAppointment', response.data);
@@ -149,7 +148,7 @@ export default {
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }  
+        }
     },
     async cancel(context, payload) {
         context.commit('setIsPageLoading', true, { root: true })
@@ -165,6 +164,6 @@ export default {
         }
         catch (error) {
             handleAPIErrorWithMessage(error);
-        }  
+        }
     }
 };

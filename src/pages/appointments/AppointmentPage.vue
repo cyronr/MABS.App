@@ -1,7 +1,8 @@
 <template>
     <base-page>
         <div class="page-content" v-if="pageLoaded">
-            <single-appointment :appointment="appointment" @cancel-appointment="cancel" @confirm-appointment="confirm"></single-appointment>
+            <single-appointment :appointment="appointment" @cancel-appointment="cancel"
+                @confirm-appointment="confirm"></single-appointment>
         </div>
     </base-page>
 </template>
@@ -13,7 +14,7 @@ export default {
     props: ['id'],
     components: {
         SingleAppointment
-    },  
+    },
     data() {
         return {
             pageLoaded: false
@@ -29,12 +30,12 @@ export default {
             await this.$store.dispatch('appointments/getById', { id: this.id })
         },
         async cancel(appointmentId) {
-            await this.$store.dispatch('appointments/cancel', { 
+            await this.$store.dispatch('appointments/cancel', {
                 id: appointmentId
             });
         },
         async confirm(appointment) {
-            await this.$store.dispatch('appointments/confirm', { 
+            await this.$store.dispatch('appointments/confirm', {
                 id: appointment.appointmentId,
                 confirmationCode: appointment.confirmationCode
             });
